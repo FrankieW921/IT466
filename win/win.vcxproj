@@ -72,14 +72,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..</OutDir>
-    <IncludePath>D:\git\libs\SDL2_image-2.8.2\include;D:\git\libs\SDL2_mixer-2.8.0\include;D:\git\libs\SDL2_ttf-2.22.0\include;D:\git\libs\SDL2-2.30.6\include;D:\git\libs\VulkanSDK\Include;D:\git\gf3d\gfc\simple_logger\include;D:\git\gf3d\gfc\simple_json\include;D:\git\gf3d\gfc\include;D:\git\gf3d\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\git\libs\SDL2_image-2.8.2\lib\x64;D:\git\libs\SDL2_mixer-2.8.0\lib\x64;D:\git\libs\SDL2_ttf-2.22.0\lib\x64;D:\git\libs\SDL2-2.30.6\lib\x64;D:\git\libs\VulkanSDK\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\chief\Github\libs\SDL2_image-2.8.2\include;C:\Users\chief\Github\libs\SDL2_mixer-2.8.0\include;C:\Users\chief\Github\libs\SDL2_ttf-2.22.0\include;C:\Users\chief\Github\libs\SDL2-2.30.7\include;C:\Users\chief\Github\libs\VulkanSDK\1.3.290.0\Include;C:\Users\chief\Github\IT466\gfc\simple_logger\include;C:\Users\chief\Github\IT466\gfc\simple_json\include;C:\Users\chief\Github\IT466\gfc\include;C:\Users\chief\Github\IT466\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\chief\Github\libs\SDL2_image-2.8.2\lib\x64;C:\Users\chief\Github\libs\SDL2_mixer-2.8.0\lib\x64;C:\Users\chief\Github\libs\SDL2_ttf-2.22.0\lib\x64;C:\Users\chief\Github\libs\SDL2-2.30.7\lib\x64;C:\Users\chief\Github\libs\VulkanSDK\1.3.290.0\Lib;$(LibraryPath)</LibraryPath>
     <TargetName>gf3d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..</OutDir>
-    <IncludePath>D:\git\libs\SDL2_image-2.8.2\include;D:\git\libs\SDL2_mixer-2.8.0\include;D:\git\libs\SDL2_ttf-2.22.0\include;D:\git\libs\SDL2-2.30.6\include;D:\git\libs\VulkanSDK\Include;D:\git\gf3d\gfc\simple_logger\include;D:\git\gf3d\gfc\simple_json\include;D:\git\gf3d\gfc\include;D:\git\gf3d\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\git\libs\SDL2_image-2.8.2\lib\x64;D:\git\libs\SDL2_mixer-2.8.0\lib\x64;D:\git\libs\SDL2_ttf-2.22.0\lib\x64;D:\git\libs\SDL2-2.30.6\lib\x64;D:\git\libs\VulkanSDK\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\chief\Github\libs\SDL2_image-2.8.2\include;C:\Users\chief\Github\libs\SDL2_mixer-2.8.0\include;C:\Users\chief\Github\libs\SDL2_ttf-2.22.0\include;C:\Users\chief\Github\libs\SDL2-2.30.7\include;C:\Users\chief\Github\libs\VulkanSDK\1.3.290.0\Include;C:\Users\chief\Github\IT466\gfc\simple_logger\include;C:\Users\chief\Github\IT466\gfc\simple_json\include;C:\Users\chief\Github\IT466\gfc\include;C:\Users\chief\Github\IT466\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\chief\Github\libs\SDL2_image-2.8.2\lib\x64;C:\Users\chief\Github\libs\SDL2_mixer-2.8.0\lib\x64;C:\Users\chief\Github\libs\SDL2_ttf-2.22.0\lib\x64;C:\Users\chief\Github\libs\SDL2-2.30.7\lib\x64;C:\Users\chief\Github\libs\VulkanSDK\1.3.290.0\Lib;$(LibraryPath)</LibraryPath>
     <TargetName>gf3d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
