@@ -194,6 +194,8 @@ void gf3d_mesh_render_generic(Mesh *mesh,Pipeline *pipe,VkDescriptorSet * descri
  */
 void gf3d_mesh_create_vertex_buffer_from_vertices(MeshPrimitive *primitive);
 
+//gf3d_mesh_setup_face_buffers
+
 /**
  * @brief get the pipeline that is used to render basic 3d meshes
  * @return NULL on error or the pipeline in question
