@@ -585,6 +585,11 @@ void gf3d_vgraphics_get_view(GFC_Matrix4 *view)
     memcpy(view,gf3d_vgraphics.ubo.view,sizeof(GFC_Matrix4));
 }
 
+void gf3d_vgraphics_set_view(GFC_Matrix4* view) {
+    if (!view)return;
+    memcpy(gf3d_vgraphics.ubo.view, view, sizeof(GFC_Matrix4));
+}
+
 
 GFC_Matrix4 *gf3d_vgraphics_get_view_matrix()
 {
@@ -598,7 +603,6 @@ void gf3d_vgraphics_rotate_camera(float degrees)
         gf3d_vgraphics.ubo.view,
         degrees,
         gfc_vector3d(0,0,1));
-
 }
 
 Command *gf3d_vgraphics_get_graphics_command_pool()

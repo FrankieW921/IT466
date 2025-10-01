@@ -11,6 +11,8 @@
 #include "gfc_primitives.h"
 
 #include "gf3d_pipeline.h"
+#include "gf3d_vgraphics.h"
+#include "gf3d_buffers.h"
 
 
 //forward declaration:
@@ -90,6 +92,20 @@ Mesh *gf3d_mesh_load(const char *filename);
 */
 void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
 
+//@brief draw all meshes loaded into the mesh manager
+void gf3d_mesh_draw_all();
+
+/**
+ * @brief queue up a render for the current draw frame
+ * @param mesh the mesh to render
+ * @param pipe the pipeline to use
+ * @param uboData the data to use to draw the mesh
+ * @param texture texture data to use
+ */
+void gf3d_mesh_queue_render(Mesh* mesh, Pipeline* pipe, void* uboData, Texture* texture);
+
+void gf3d_mesh_primitive_queue_render(MeshPrimitive* primitive, Pipeline* pipe, void* uboData, Texture* texture);
+
 /**
  * @brief allocate a zero initialized mesh primitive
  * @return NULL on error or the primitive
@@ -120,9 +136,14 @@ void gf3d_mesh_free(Mesh *mesh);
  * @param primitive the mesh primitive to populate
  * @note the primitive must have the objData set and it must have be organizes in buffer order
  */
-void gf3d_mesh_create_vertex_buffer_from_vertices(MeshPrimitive *primitive);
+void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* primitive);
 
-//gf3d_mesh_setup_face_buffers
+/**
+ * @brief create a mesh's internal buffers based on faces
+ * @param primitive the mesh primitive to populate
+ * @note the primitive must have the objData set and it must have be organizes in buffer order
+ */
+void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* primitive);
 
 /**
  * @brief get the pipeline that is used to render basic 3d meshes
