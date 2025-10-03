@@ -34,6 +34,7 @@ typedef struct {
 static MeshManager gf3d_mesh = { 0 };
 
 void gf3d_mesh_init(Uint32 meshMax) { //really thankful i have 2 codebases to work with, sprite's here and my 2D game
+    slog("Initializing Mesh Manager");
     if (!meshMax) {
         slog("Cannot initialize mesh system with 0 meshes");
         return;
@@ -45,12 +46,13 @@ void gf3d_mesh_init(Uint32 meshMax) { //really thankful i have 2 codebases to wo
         return;
     }
     gf3d_mesh.max_meshes = meshMax;
-    atexit(gf3d_mesh_close);
-    slog("entity system initialized");
+    gf3d_mesh_get_attribute_descriptions(NULL);
+    gf3d_mesh_get_bind_description();
+    //atexit(gf3d_mesh_close);
+    slog("mesh system initialized");
 }
 
 void gf3d_mesh_close(){ //needs some other methods first
-
 
 }
 
@@ -74,19 +76,19 @@ Mesh* gf3d_mesh_load(const char* filename) {
     
     if (!filename) return NULL;
 
-    //implement gf3d_mesh_get_by_file(const char* filename)
-
     objectData = gf3d_obj_load_from_file(filename);
     if (!objectData) {
         slog("failed to parse obj file %s", filename);
         return NULL;
     }
+    slog("Object data loaded");
     mesh = gf3d_mesh_new();
     if (!mesh) {
         slog("failed to allocate mesh for file %s", filename);
         gf3d_obj_free(objectData);
         return NULL;
     }
+    slog("New mesh allocated");
     primitiveFromObject = gf3d_mesh_primitive_new();
     if (!primitiveFromObject) {
         slog("failed to allocate mesh primitive for file %s", filename);
@@ -94,10 +96,10 @@ Mesh* gf3d_mesh_load(const char* filename) {
         gf3d_mesh_free(mesh);
         return NULL;
     }
-
+    slog("primitive initialized");
     gfc_list_append(mesh->primitives, primitiveFromObject);
     primitiveFromObject->objData = objectData;
-    
+    slog("Primitive appended to list with object data");
     gf3d_mesh_primitive_create_vertex_buffer(primitiveFromObject);
     gf3d_mesh_primitive_create_face_buffer(primitiveFromObject); //name different from prof
     
@@ -150,19 +152,34 @@ MeshPrimitive* gf3d_mesh_primitive_new() {
     return gfc_allocate_array(sizeof(MeshPrimitive), 1);
 }
 
+VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* count) {
+    gf3d_mesh.attributeDescriptions[0].binding = 0;
+    gf3d_mesh.attributeDescriptions[0].location = 0;
+    gf3d_mesh.attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+    gf3d_mesh.attributeDescriptions[0].offset = offsetof(Vertex, vertex);
 
-/**
- * @brief get the input attribute descriptions for mesh based rendering
- * @param count (optional, output) the number of attributes
- * @return a pointer to a vertex input attribute description array
- */
-VkVertexInputAttributeDescription* gf3d_mesh_get_attribute_descriptions(Uint32* count);
+    gf3d_mesh.attributeDescriptions[1].binding = 0;
+    gf3d_mesh.attributeDescriptions[1].location = 1;
+    gf3d_mesh.attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    gf3d_mesh.attributeDescriptions[1].offset = offsetof(Vertex, normal);
 
-/**
- * @brief get the binding description for mesh based rendering
- * @return vertex input binding descriptions compatible with mesh data
- */
-VkVertexInputBindingDescription* gf3d_mesh_get_bind_description();
+    gf3d_mesh.attributeDescriptions[2].binding = 0;
+    gf3d_mesh.attributeDescriptions[2].location = 2;
+    gf3d_mesh.attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+    gf3d_mesh.attributeDescriptions[2].offset = offsetof(Vertex, texel);
+
+    if (count)*count = MESH_ATTRIBUTE_COUNT;
+    slog("Done attribute desc");
+    return &gf3d_mesh.attributeDescriptions;
+}
+
+VkVertexInputBindingDescription* gf3d_mesh_get_bind_description() {
+    gf3d_mesh.bindingDescription.binding = 0;
+    gf3d_mesh.bindingDescription.stride = sizeof(Vertex);
+    gf3d_mesh.bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+    slog("Done bind desc");
+    return &gf3d_mesh.bindingDescription;
+}
 
 void gf3d_mesh_free(Mesh* mesh) {
     /*
@@ -180,8 +197,10 @@ void gf3d_mesh_free(Mesh* mesh) {
 void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* primitive) {
     void* data = NULL;
     VkDevice device = gf3d_vgraphics_get_default_logical_device();
+
     Vertex* vertices;
     Uint32 vcount;
+
     size_t bufferSize;
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -209,13 +228,16 @@ void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* primitive) {
     vkFreeMemory(device, stagingBufferMemory, NULL);
 
     primitive->vertexCount = vcount;
+    slog("Face buffer created");
 }
 
 void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* primitive) {
     void* data = NULL;
     VkDevice device = gf3d_vgraphics_get_default_logical_device();
+
     Face* faces;
     Uint32 fcount;
+
     size_t bufferSize;
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -243,6 +265,7 @@ void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* primitive) {
     vkFreeMemory(device, stagingBufferMemory, NULL);
 
     primitive->faceCount = fcount;
+    slog("Face buffer created");
 }
 
 Pipeline* gf3d_mesh_get_pipeline() {

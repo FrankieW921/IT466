@@ -118,7 +118,7 @@ MeshPrimitive *gf3d_mesh_primitive_new();
  * @param count (optional, output) the number of attributes
  * @return a pointer to a vertex input attribute description array
  */
-VkVertexInputAttributeDescription * gf3d_mesh_get_attribute_descriptions(Uint32 *count);
+VkVertexInputAttributeDescription * gf3d_mesh_get_attribute_descriptions(Uint32* count);
 
 /**
  * @brief get the binding description for mesh based rendering
