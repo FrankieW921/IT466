@@ -80,7 +80,7 @@ int main(int argc,char *argv[])
         //camera updaes
         gf3d_vgraphics_render_start();
                 //3d draws
-                gf3d_mesh_draw(mesh, dinoM, GFC_COLOR_WHITE, texture);
+                gf3d_mesh_draw(mesh, id, GFC_COLOR_WHITE, texture);
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));

@@ -25,6 +25,7 @@ typedef struct {
     VkDevice    device;
     Pipeline*   pipe;
     VkBuffer    faceBuffer;
+    VkDeviceMemory  faceBufferMemory;
     VkVertexInputAttributeDescription   attributeDescriptions[MESH_ATTRIBUTE_COUNT];
     VkVertexInputBindingDescription     bindingDescription;
     float       drawOrder;
@@ -34,6 +35,8 @@ typedef struct {
 static MeshManager gf3d_mesh = { 0 };
 
 void gf3d_mesh_init(Uint32 meshMax) { //really thankful i have 2 codebases to work with, sprite's here and my 2D game
+    Uint32 count;
+
     slog("Initializing Mesh Manager");
     if (!meshMax) {
         slog("Cannot initialize mesh system with 0 meshes");
@@ -46,8 +49,22 @@ void gf3d_mesh_init(Uint32 meshMax) { //really thankful i have 2 codebases to wo
         return;
     }
     gf3d_mesh.max_meshes = meshMax;
-    gf3d_mesh_get_attribute_descriptions(NULL);
-    gf3d_mesh_get_bind_description();
+    gf3d_mesh.chain_length = gf3d_swapchain_get_chain_length();
+    gf3d_mesh.mesh_list = (Mesh*)gfc_allocate_array(sizeof(Mesh), meshMax);
+    gf3d_mesh.device = gf3d_vgraphics_get_default_logical_device();
+
+    gf3d_mesh_get_attribute_descriptions(&count);
+    //pipeline stuff
+    gf3d_mesh.pipe = gf3d_pipeline_create_from_config(
+        gf3d_vgraphics_get_default_logical_device(),
+        "config/model_pipeline.cfg",
+        gf3d_vgraphics_get_view_extent(),
+        meshMax,
+        gf3d_mesh_get_bind_description(),
+        gf3d_mesh_get_attribute_descriptions(NULL),
+        count,
+        sizeof(MeshUBO),
+        VK_INDEX_TYPE_UINT16);
     //atexit(gf3d_mesh_close);
     slog("mesh system initialized");
 }
@@ -77,29 +94,30 @@ Mesh* gf3d_mesh_load(const char* filename) {
     if (!filename) return NULL;
 
     objectData = gf3d_obj_load_from_file(filename);
-    if (!objectData) {
-        slog("failed to parse obj file %s", filename);
+    if (!objectData) { 
+        slog("failed to parse obj file %s", filename); slog_sync();
         return NULL;
     }
     slog("Object data loaded");
     mesh = gf3d_mesh_new();
     if (!mesh) {
-        slog("failed to allocate mesh for file %s", filename);
+        slog("failed to allocate mesh for file %s", filename); slog_sync();
         gf3d_obj_free(objectData);
         return NULL;
     }
     slog("New mesh allocated");
     primitiveFromObject = gf3d_mesh_primitive_new();
     if (!primitiveFromObject) {
-        slog("failed to allocate mesh primitive for file %s", filename);
+        slog("failed to allocate mesh primitive for file %s", filename); slog_sync();
         gf3d_obj_free(objectData);
         gf3d_mesh_free(mesh);
         return NULL;
     }
-    slog("primitive initialized");
+    slog("primitive initialized"); slog_sync();
+    mesh->primitives = gfc_list_new();
     gfc_list_append(mesh->primitives, primitiveFromObject);
     primitiveFromObject->objData = objectData;
-    slog("Primitive appended to list with object data");
+    slog("Primitive appended to list with object data"); slog_sync();
     gf3d_mesh_primitive_create_vertex_buffer(primitiveFromObject);
     gf3d_mesh_primitive_create_face_buffer(primitiveFromObject); //name different from prof
     
@@ -130,8 +148,16 @@ figure out how to pass in model/identity matrix to draw*/
 void gf3d_mesh_queue_render(Mesh* mesh, Pipeline* pipe, void* uboData, Texture* texture) {
     int i, c;
     MeshPrimitive *primitive;
-    if (!mesh || !pipe || !uboData) {
-        slog("Failed to queue mesh for render");
+    if (!mesh) {
+        slog("Failed to queue mesh for render, NULL mesh");
+        return;
+    }
+    if (!pipe) {
+        slog("Failed to queue mesh for render, NULL pipeline");
+        return;
+    }
+    if (!uboData) {
+        slog("Failed to queue mesh for render, NULL ubo");
         return;
     }
     c = gfc_list_count(mesh->primitives);
@@ -228,7 +254,7 @@ void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* primitive) {
     vkFreeMemory(device, stagingBufferMemory, NULL);
 
     primitive->vertexCount = vcount;
-    slog("Face buffer created");
+    slog("Vertex buffer created");
 }
 
 void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* primitive) {
