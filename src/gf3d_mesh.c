@@ -92,8 +92,8 @@ Mesh* gf3d_mesh_load(const char* filename) {
     Mesh* mesh;
     
     if (!filename) return NULL;
-
-    objectData = gf3d_obj_load_from_file(filename);
+    slog("loading object data...");
+    objectData = gf3d_obj_load_from_file(filename); //YOU.
     if (!objectData) { 
         slog("failed to parse obj file %s", filename); slog_sync();
         return NULL;
@@ -125,11 +125,16 @@ Mesh* gf3d_mesh_load(const char* filename) {
 }
 
 void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture) {
-    MeshUBO ubo;
+    MeshUBO ubo = { 0 };
     if (!mesh) return;
 
-    ubo = gf3d_mesh_get_ubo(modelMat, mod);
-
+    //ubo = gf3d_mesh_get_ubo(modelMat, mod);
+    gfc_matrix4_copy(ubo.model, modelMat);
+    gf3d_vgraphics_get_view(&ubo.view);
+    gf3d_vgraphics_get_projection_matrix(&ubo.proj);
+    ubo.color = gfc_color_to_vector4f(mod);
+    ubo.camera = gfc_vector3dw(gf3d_camera_get_position(), 1.0);
+    gfc_matrix4_slog(modelMat);
     gf3d_mesh_queue_render(mesh, gf3d_mesh.pipe, &ubo, texture);
 }
 
@@ -242,12 +247,15 @@ void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* primitive) {
     //create staging data
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT|VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         &stagingBuffer, &stagingBufferMemory);
+
     vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, vertices, (size_t)bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
+
     //copy staged data to the primitive
     gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT|VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         &primitive->vertexBuffer, &primitive->vertexBufferMemory);
+
     gf3d_buffer_copy(stagingBuffer, primitive->vertexBuffer, bufferSize);
 
     vkDestroyBuffer(device, stagingBuffer, NULL);
@@ -283,7 +291,7 @@ void gf3d_mesh_primitive_create_face_buffer(MeshPrimitive* primitive) {
     memcpy(data, faces, (size_t)bufferSize);
     vkUnmapMemory(device, stagingBufferMemory);
     //copy staged data to the primitive
-    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+    gf3d_buffer_create(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
         &primitive->faceBuffer, &primitive->faceBufferMemory);
     gf3d_buffer_copy(stagingBuffer, primitive->faceBuffer, bufferSize);
 

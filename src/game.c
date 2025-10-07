@@ -58,7 +58,6 @@ int main(int argc,char *argv[])
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
-    gf3d_mesh_init(1024);
     
     //game init
     srand(SDL_GetTicks());
@@ -78,6 +77,7 @@ int main(int argc,char *argv[])
         gf2d_mouse_update();
         gf2d_font_update();
         //camera updaes
+        gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
                 //3d draws
                 gf3d_mesh_draw(mesh, id, GFC_COLOR_WHITE, texture);
