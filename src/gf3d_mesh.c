@@ -124,7 +124,7 @@ Mesh* gf3d_mesh_load(const char* filename) {
     return mesh;
 }
 
-void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture) {
+void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor) {
     MeshUBO ubo = { 0 };
     if (!mesh) return;
 
@@ -133,8 +133,9 @@ void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* te
     gf3d_vgraphics_get_view(&ubo.view);
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
     ubo.color = gfc_color_to_vector4f(mod);
+    ubo.lightColor = gfc_color_to_vector4(lightColor);
+    ubo.lightPos = gfc_vector3dw(lightPos, 1.0);
     ubo.camera = gfc_vector3dw(gf3d_camera_get_position(), 1.0);
-    gfc_matrix4_slog(modelMat);
     gf3d_mesh_queue_render(mesh, gf3d_mesh.pipe, &ubo, texture);
 }
 
