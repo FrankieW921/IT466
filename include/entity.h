@@ -20,6 +20,7 @@ typedef struct Entity_S {
 	void (*draw)(Entity_S);
 	void (*think)(Entity_S);
 	void (*update)(Entity_S);
+	void* data;
 }Entity;
 
 /*@brief creates a new blank entity
@@ -39,7 +40,7 @@ void entity_system_init(Uint8 maxEnts);
 
 void entity_system_close();
 
-void entity_draw_all();
+void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod);
 
 void entity_think_all();
 

@@ -79,6 +79,7 @@ Mesh* gf3d_mesh_new() {
     {
         if (gf3d_mesh.mesh_list[i]._inuse)continue;
         gf3d_mesh.mesh_list[i]._inuse = 1;
+        gf3d_mesh.mesh_list[i]._refCount = 1;
         return &gf3d_mesh.mesh_list[i];
     }
     slog("gf3d_mesh_new: no free slots for new meshes");
@@ -92,6 +93,11 @@ Mesh* gf3d_mesh_load(const char* filename) {
     Mesh* mesh;
     
     if (!filename) return NULL;
+    mesh = gf3d_mesh_get_by_filename(filename);
+    if (mesh) {
+        mesh->_refCount++;
+        return mesh;
+    }
     slog("loading object data...");
     objectData = gf3d_obj_load_from_file(filename); //YOU.
     if (!objectData) { 
@@ -120,8 +126,16 @@ Mesh* gf3d_mesh_load(const char* filename) {
     slog("Primitive appended to list with object data"); slog_sync();
     gf3d_mesh_primitive_create_vertex_buffer(primitiveFromObject);
     gf3d_mesh_primitive_create_face_buffer(primitiveFromObject); //name different from prof
-    
+    gfc_line_cpy(mesh->filename, filename);
     return mesh;
+}
+
+Mesh* gf3d_mesh_get_by_filename(const char* filename) {
+    int i;
+    for (i = 0; i < gf3d_mesh.max_meshes; i++) {
+        if (!gfc_line_cmp(filename, gf3d_mesh.mesh_list[i].filename)) return &gf3d_mesh.mesh_list[i];
+    }
+    return NULL;
 }
 
 void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor) {

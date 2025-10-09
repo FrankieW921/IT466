@@ -89,6 +89,8 @@ Mesh *gf3d_mesh_new();
  */
 Mesh *gf3d_mesh_load(const char *filename);
 
+Mesh* gf3d_mesh_get_by_filename(const char* filename);
+
 /*
 * @brief draw the mesh with these parameters
 */

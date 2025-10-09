@@ -22,6 +22,9 @@
 #include "gf3d_camera.h"
 #include "gf3d_mesh.h"
 
+#include "entity.h"
+#include "monster.h"
+
 extern int __DEBUG;
 
 static int _done = 0;
@@ -41,11 +44,8 @@ int main(int argc,char *argv[])
 {
     //local variables
     //Sprite *bg;
-    Mesh* mesh;
-    Texture* texture;
     float theta = 0;
     GFC_Vector3D cam = { 0,25,0 };
-    GFC_Matrix4 id, dinoM;
     GFC_Vector3D lightPos = { -100, 5, 50 };
     
     //initializtion    
@@ -60,31 +60,27 @@ int main(int argc,char *argv[])
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
     gf2d_actor_init(1000);
-    
+    entity_system_init(100);
     //game init
     srand(SDL_GetTicks());
     slog_sync();
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
-    mesh = gf3d_mesh_load("models/dino/dino.obj");
-    slog("Agumon loaded");
-    texture = gf3d_texture_load("models/dino/dino.png");
-    slog("Agumon texture loaded");
-    gfc_matrix4_identity(id);
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
+    monster_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
+    monster_spawn(gfc_vector3d(20, 0, 0), GFC_COLOR_BLUE);
     // main game loop    
     while(!_done)
     {
         gfc_input_update();
         gf2d_mouse_update();
         gf2d_font_update();
-        theta += 0.1;
-        gfc_matrix4_rotate_z(dinoM, id, theta);
+        theta += 0.005;
         //camera updaes
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
                 //3d draws
-                gf3d_mesh_draw(mesh, dinoM, GFC_COLOR_WHITE, texture, lightPos, GFC_COLOR_RED);
+                entity_draw_all(lightPos, GFC_COLOR_WHITE);
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 gf2d_font_draw_line_tag("ALT+F4 to exit",FT_H1,GFC_COLOR_WHITE, gfc_vector2d(10,10));
