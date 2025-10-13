@@ -23,6 +23,7 @@
 #include "gf3d_mesh.h"
 
 #include "entity.h"
+#include "player.h"
 #include "monster.h"
 
 extern int __DEBUG;
@@ -67,19 +68,21 @@ int main(int argc,char *argv[])
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
-    monster_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
+    player_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
     monster_spawn(gfc_vector3d(20, 0, 0), GFC_COLOR_BLUE);
     // main game loop    
     while(!_done)
     {
         gfc_input_update();
+        SDL_GetKeyboardState(NULL);
         gf2d_mouse_update();
         gf2d_font_update();
-        theta += 0.005;
         //camera updaes
         gf3d_camera_update_view();
         gf3d_vgraphics_render_start();
                 //3d draws
+                entity_think_all();
+                entity_update_all();
                 entity_draw_all(lightPos, GFC_COLOR_WHITE);
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

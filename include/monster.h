@@ -3,6 +3,6 @@
 
 #include "entity.h"
 
-Entity* monster_spawn(GFC_Vector3D position);
+Entity* monster_spawn(GFC_Vector3D position, GFC_Color colorMod);
 
 #endif

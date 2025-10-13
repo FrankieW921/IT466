@@ -32,7 +32,7 @@ void entity_free(Entity* e) {
 	memset(e, 0, sizeof(Entity));
 }
 
-void entity_system_init(Uint8 maxEnts) {
+void entity_system_init(Uint16 maxEnts) {
 	if (!maxEnts) {
 		slog("Invalid maxEnts for entity system init");
 		return;
@@ -47,6 +47,30 @@ void entity_system_init(Uint8 maxEnts) {
 	atexit(entity_system_close);
 }
 
+void entity_system_close() {
+	int i;
+	if (entity_system.entity_list) {
+		for (i = 0; i < entity_system.entity_max; i++) {
+			if (entity_system.entity_list[i]._inuse) {
+				entity_free(&entity_system.entity_list[i]);
+			}
+		}
+	}
+}
+
+void entity_move(Entity* self) {
+	GFC_Box bounds;
+	GFC_Vector3D position;
+
+	gfc_vector3d_add(position, self->position, self->velocity);
+	//gfc_vector3d_add(self->velocity, self->velocity, self->acceleration); //this doesn't have acceleration yet
+
+	gfc_box_cpy(bounds, self->bounds); //start of collision checking
+	gfc_vector3d_add(bounds, bounds, self->velocity);
+
+	gfc_vector3d_copy(self->position, position);
+}
+
 void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color colorMod) {
 	GFC_Matrix4 modelMat;
 	if (!ent) return;
@@ -59,17 +83,6 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color colorMod) {
 		colorMod);
 }
 
-void entity_system_close() {
-	int i;
-	if (entity_system.entity_list) {
-		for (i = 0; i < entity_system.entity_max; i++) {
-			if (entity_system.entity_list[i]._inuse) {
-				entity_free(&entity_system.entity_list[i]);
-			}
-		}
-	}
-}
-
 void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod) {
 	int i;
 	for (i = 0; i < entity_system.entity_max; i++) {
@@ -78,6 +91,30 @@ void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod) {
 	}
 }
 
-void entity_think_all();
+void entity_think(Entity* self)
+{
+	if (!self)return;
+	if (self->think)self->think(self);
+}
 
-void entity_update_all();
+void entity_think_all() {
+	int i;
+	for (i = 0; i < entity_system.entity_max; i++) {
+		if (!entity_system.entity_list[i]._inuse)continue;
+		entity_think(&entity_system.entity_list[i]);
+	}
+}
+
+void entity_update(Entity* self)
+{
+	if (!self)return;
+	if (self->update)self->update(self);
+}
+
+void entity_update_all() {
+	int i;
+	for (i = 0; i < entity_system.entity_max; i++) {
+		if (!entity_system.entity_list[i]._inuse)continue;
+		entity_update(&entity_system.entity_list[i]);
+	}
+}
