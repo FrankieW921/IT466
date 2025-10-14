@@ -48,6 +48,11 @@ int main(int argc,char *argv[])
     float theta = 0;
     GFC_Vector3D cam = { 0,25,0 };
     GFC_Vector3D lightPos = { -100, 5, 50 };
+
+    Mesh* skybox;
+    GFC_Matrix4 skyboxID;
+    Texture* skyTexture;
+
     
     //initializtion    
     parse_arguments(argc,argv);
@@ -70,6 +75,10 @@ int main(int argc,char *argv[])
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     player_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
     monster_spawn(gfc_vector3d(20, 0, 0), GFC_COLOR_BLUE);
+
+    skybox = gf3d_mesh_load("models/sky/sky.obj");
+    skyTexture = gf3d_texture_load("models/sky/sky.png");
+    gfc_matrix4_identity(skyboxID);
     // main game loop    
     while(!_done)
     {
@@ -83,6 +92,7 @@ int main(int argc,char *argv[])
                 //3d draws
                 entity_think_all();
                 entity_update_all();
+                gf3d_mesh_sky_draw(skybox, skyboxID, GFC_COLOR_WHITE, skyTexture);
                 entity_draw_all(lightPos, GFC_COLOR_WHITE);
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

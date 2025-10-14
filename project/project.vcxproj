@@ -265,6 +265,8 @@
     <None Include="..\config\sky_pipeline.cfg" />
     <None Include="..\shaders\model.frag" />
     <None Include="..\shaders\model.vert" />
+    <None Include="..\shaders\sky.frag" />
+    <None Include="..\shaders\sky.vert" />
     <None Include="..\shaders\sprite.frag" />
     <None Include="..\shaders\sprite.vert" />
     <None Include="..\shaders\sprite_frag.spv" />

@@ -32,6 +32,14 @@ typedef struct
 
 typedef struct
 {
+    GFC_Matrix4    model;
+    GFC_Matrix4      view;
+    GFC_Matrix4      proj;
+    GFC_Vector4D    color;
+} SkyUBO;
+
+typedef struct
+{
     GFC_Vector3D vertex;
     GFC_Vector3D normal;
     GFC_Vector2D texel;
@@ -95,6 +103,11 @@ Mesh* gf3d_mesh_get_by_filename(const char* filename);
 * @brief draw the mesh with these parameters
 */
 void gf3d_mesh_draw(Mesh* mesh, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture, GFC_Vector3D lightPos, GFC_Color lightColor);
+
+/*
+* @brief draw a skybox with provided parameters
+*/
+void gf3d_mesh_sky_draw(Mesh* sky, GFC_Matrix4 modelMat, GFC_Color mod, Texture* texture);
 
 //@brief draw all meshes loaded into the mesh manager
 void gf3d_mesh_draw_all();

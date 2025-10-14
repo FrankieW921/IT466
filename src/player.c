@@ -51,19 +51,19 @@ void player_think(Entity* self) {
 
 	if (gfc_input_command_down("moveforward")) {
 		slog("PLAYER W");
-		self->velocity.x += .1;
+		self->velocity.y -= .1;
 	}
 	if (gfc_input_command_down("moveback")) {
 		slog("PLAYER S");
-		self->velocity.x -= .1;
+		self->velocity.y += .1;
 	}
 	if (gfc_input_command_down("moveright")) {
 		slog("PLAYER D");
-		self->velocity.y += .1;
+		self->velocity.x -= .1;
 	}
 	if (gfc_input_command_down("moveleft")) {
 		slog("PLAYER A");
-		self->velocity.y -= .1;
+		self->velocity.x += .1;
 	}
 	gfc_vector3d_normalize(&self->velocity);
 
