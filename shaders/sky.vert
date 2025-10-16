@@ -23,7 +23,7 @@ layout(location = 1) out vec4 colorMod;
 
 void main()
 {
-    gl_Position = ubo.proj * ubo.view * ubo.proj * vec4(inPosition, 1.0);
+    gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;
     colorMod = ubo.color;
 

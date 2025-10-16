@@ -171,14 +171,12 @@ void gf3d_mesh_sky_draw(Mesh* sky, GFC_Matrix4 modelMat, GFC_Color mod, Texture*
     //ubo = gf3d_mesh_get_ubo(modelMat, mod);
     gfc_matrix4_copy(ubo.model, modelMat);
     gf3d_vgraphics_get_view(&ubo.view);
-
     ubo.view[0][3] = 0;
     ubo.view[1][3] = 0;
     ubo.view[2][3] = 0;
     ubo.view[3][0] = 0;
-    ubo.view[3][0] = 0;
-    ubo.view[3][0] = 0;
-
+    ubo.view[3][1] = 0;
+    ubo.view[3][2] = 0;
     gf3d_vgraphics_get_projection_matrix(&ubo.proj);
     ubo.color = gfc_color_to_vector4f(mod);
     
