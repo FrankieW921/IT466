@@ -25,6 +25,7 @@
 #include "entity.h"
 #include "player.h"
 #include "monster.h"
+#include "world.h"
 
 extern int __DEBUG;
 
@@ -46,13 +47,15 @@ int main(int argc,char *argv[])
     //local variables
     //Sprite *bg;
     float theta = 0;
-    GFC_Vector3D cam = { 0,25,0 };
-    GFC_Vector3D lightPos = { -100, 5, 50 };
+    GFC_Vector3D cam = { 0,-45,15 };
+    GFC_Vector3D lightPos = { -10, 0, 25 };
 
     Mesh* skybox;
     GFC_Matrix4 skyboxID;
     Texture* skyTexture;
 
+    World* testworld;
+    GFC_Matrix4 testworldID;
     
     //initializtion    
     parse_arguments(argc,argv);
@@ -73,12 +76,15 @@ int main(int argc,char *argv[])
     //bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
-    player_spawn(gfc_vector3d(0, 0, 0), GFC_COLOR_WHITE);
+    player_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
     monster_spawn(gfc_vector3d(20, 0, 0), GFC_COLOR_BLUE);
 
     skybox = gf3d_mesh_load("models/sky/sky.obj");
     skyTexture = gf3d_texture_load("models/sky/sky.png");
     gfc_matrix4_identity(skyboxID);
+
+    testworld = world_load("defs/terrain/terrain1.def");
+    gfc_matrix4_identity(testworldID);
     // main game loop    
     while(!_done)
     {
@@ -93,6 +99,7 @@ int main(int argc,char *argv[])
                 entity_think_all();
                 entity_update_all();
                 gf3d_mesh_sky_draw(skybox, skyboxID, GFC_COLOR_WHITE, skyTexture);
+                world_draw(testworld);
                 entity_draw_all(lightPos, GFC_COLOR_WHITE);
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));

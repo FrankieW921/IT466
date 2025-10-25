@@ -19,6 +19,12 @@
     <Filter Include="Resource Files\shaders">
       <UniqueIdentifier>{88ebdaa3-d01b-48a7-a5a7-9b10e3da594e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\defs">
+      <UniqueIdentifier>{5959dc20-1575-4945-81e0-5421f1f5841a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\defs\terrain">
+      <UniqueIdentifier>{8f5ed3df-29a7-4740-91f4-733005d72ddb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\gf2d_actor.h">
@@ -189,6 +195,12 @@
     <ClInclude Include="..\include\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\world.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\camera_entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\game.c">
@@ -356,6 +368,12 @@
     <ClCompile Include="..\src\player.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\world.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\camera_entity.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\config\audio.cfg">
@@ -402,6 +420,9 @@
     </None>
     <None Include="..\shaders\sky.vert">
       <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="..\defs\terrain\terrain1.def">
+      <Filter>Resource Files\defs\terrain</Filter>
     </None>
   </ItemGroup>
 </Project>

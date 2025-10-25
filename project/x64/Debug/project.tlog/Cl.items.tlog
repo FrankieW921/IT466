@@ -26,6 +26,7 @@ C:\Users\chief\Github\gf3d\gfc\src\gfc_text.c;C:\Users\chief\Github\gf3d\project
 C:\Users\chief\Github\gf3d\gfc\src\gfc_types.c;C:\Users\chief\Github\gf3d\project\x64\Debug\gfc_types.obj
 C:\Users\chief\Github\gf3d\gfc\src\gfc_vector.c;C:\Users\chief\Github\gf3d\project\x64\Debug\gfc_vector.obj
 C:\Users\chief\Github\gf3d\gfc\src\miniz.c;C:\Users\chief\Github\gf3d\project\x64\Debug\miniz.obj
+C:\Users\chief\Github\gf3d\src\camera_entity.c;C:\Users\chief\Github\gf3d\project\x64\Debug\camera_entity.obj
 C:\Users\chief\Github\gf3d\src\entity.c;C:\Users\chief\Github\gf3d\project\x64\Debug\entity.obj
 C:\Users\chief\Github\gf3d\src\game.c;C:\Users\chief\Github\gf3d\project\x64\Debug\game.obj
 C:\Users\chief\Github\gf3d\src\gf2d_actor.c;C:\Users\chief\Github\gf3d\project\x64\Debug\gf2d_actor.obj
@@ -53,3 +54,4 @@ C:\Users\chief\Github\gf3d\src\gf3d_vgraphics.c;C:\Users\chief\Github\gf3d\proje
 C:\Users\chief\Github\gf3d\src\gf3d_vqueues.c;C:\Users\chief\Github\gf3d\project\x64\Debug\gf3d_vqueues.obj
 C:\Users\chief\Github\gf3d\src\monster.c;C:\Users\chief\Github\gf3d\project\x64\Debug\monster.obj
 C:\Users\chief\Github\gf3d\src\player.c;C:\Users\chief\Github\gf3d\project\x64\Debug\player.obj
+C:\Users\chief\Github\gf3d\src\world.c;C:\Users\chief\Github\gf3d\project\x64\Debug\world.obj

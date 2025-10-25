@@ -171,6 +171,7 @@
     <ClInclude Include="..\gfc\simple_json\include\simple_json_types.h" />
     <ClInclude Include="..\gfc\simple_json\include\simple_json_value.h" />
     <ClInclude Include="..\gfc\simple_logger\include\simple_logger.h" />
+    <ClInclude Include="..\include\camera_entity.h" />
     <ClInclude Include="..\include\entity.h" />
     <ClInclude Include="..\include\gf2d_actor.h" />
     <ClInclude Include="..\include\gf2d_camera.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="..\include\gf3d_vqueues.h" />
     <ClInclude Include="..\include\monster.h" />
     <ClInclude Include="..\include\player.h" />
+    <ClInclude Include="..\include\world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c" />
@@ -227,6 +229,7 @@
     <ClCompile Include="..\gfc\src\gfc_types.c" />
     <ClCompile Include="..\gfc\src\gfc_vector.c" />
     <ClCompile Include="..\gfc\src\miniz.c" />
+    <ClCompile Include="..\src\camera_entity.c" />
     <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf2d_actor.c" />
@@ -254,6 +257,7 @@
     <ClCompile Include="..\src\gf3d_vqueues.c" />
     <ClCompile Include="..\src\monster.c" />
     <ClCompile Include="..\src\player.c" />
+    <ClCompile Include="..\src\world.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\config\audio.cfg" />
@@ -263,6 +267,7 @@
     <None Include="..\config\overlay_pipeline.cfg" />
     <None Include="..\config\setup.cfg" />
     <None Include="..\config\sky_pipeline.cfg" />
+    <None Include="..\defs\terrain\terrain1.def" />
     <None Include="..\shaders\model.frag" />
     <None Include="..\shaders\model.vert" />
     <None Include="..\shaders\sky.frag" />

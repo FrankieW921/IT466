@@ -22,8 +22,8 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 
 	data = gfc_allocate_array(sizeof(PlayerData), 1);
 	gfc_line_cpy(self->name, "Player");
-	self->mesh = gf3d_mesh_load("models/dino/dino.obj");
-	self->texture = gf3d_texture_load("models/dino/dino.png");
+	self->mesh = gf3d_mesh_load("models/enemy4/enemy4.obj");
+	self->texture = gf3d_texture_load("models/enemy4/enemy4.png");
 	self->color = color;
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
@@ -48,23 +48,27 @@ void player_think(Entity* self) {
 
 	self->velocity.x = 0;
 	self->velocity.y = 0;
+	self->velocity.z = 0;
 
 	if (gfc_input_command_down("moveforward")) {
-		slog("PLAYER W");
-		self->velocity.y -= .1;
+		self->velocity.y += 1;
 	}
 	if (gfc_input_command_down("moveback")) {
-		slog("PLAYER S");
-		self->velocity.y += .1;
+		self->velocity.y -= 1;
 	}
 	if (gfc_input_command_down("moveright")) {
-		slog("PLAYER D");
-		self->velocity.x -= .1;
+		self->velocity.x += 1;
 	}
 	if (gfc_input_command_down("moveleft")) {
-		slog("PLAYER A");
-		self->velocity.x += .1;
+		self->velocity.x -= 1;
 	}
+	if (gfc_input_command_down("jump")) {
+		self->velocity.z += 1;
+	}
+	if (gfc_input_command_down("crouch")) {
+		self->velocity.z -= 1;
+	}
+
 	gfc_vector3d_normalize(&self->velocity);
 
 	mouseState = SDL_GetMouseState(&mx, &my);
@@ -82,9 +86,13 @@ void player_update(Entity* self) {
 	self->bounds.x = self->position.x;
 	self->bounds.y = self->position.y;
 	self->bounds.z = self->position.z;
-
 }
 
 void player_data_new(PlayerData* data) {
+	data = gfc_allocate_array(sizeof(PlayerData), 1);
 
+	data->headInventory = gfc_list_new();
+	data->armInventory = gfc_list_new();
+	data->bodyInventory = gfc_list_new();
+	data->legInventory = gfc_list_new();
 }

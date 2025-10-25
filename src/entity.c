@@ -1,6 +1,7 @@
 #include "simple_logger.h"
 
 #include "entity.h"
+#include "world.h"
 
 typedef struct {
 	Entity* entity_list;
@@ -60,15 +61,20 @@ void entity_system_close() {
 
 void entity_move(Entity* self) {
 	GFC_Box bounds;
-	GFC_Vector3D position;
+	GFC_Vector3D positionPre, positionPost, contact;
 
-	gfc_vector3d_add(position, self->position, self->velocity);
-	//gfc_vector3d_add(self->velocity, self->velocity, self->acceleration); //this doesn't have acceleration yet
+	gfc_vector3d_copy(positionPre, self->position);
+	gfc_vector3d_add(positionPost, self->position, self->velocity);
+
+	if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
+		slog("CONTACT");
+	}
+	else {
+		gfc_vector3d_copy(self->position, positionPost);
+	}
 
 	gfc_box_cpy(bounds, self->bounds); //start of collision checking
 	gfc_vector3d_add(bounds, bounds, self->velocity);
-
-	gfc_vector3d_copy(self->position, position);
 }
 
 void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color colorMod) {
@@ -81,6 +87,14 @@ void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color colorMod) {
 		ent->texture,
 		lightPos,
 		colorMod);
+}
+
+void entity_draw_shadow(Entity* ent) {
+	GFC_Vector3D drawPosition;
+	GFC_Matrix4 modelMat;
+	if (!ent || !ent->drawShadow) return 0;
+	gfc_vector3d_copy(drawPosition, ent->position);
+	gfc_matrix4_from_vectors(modelMat, ent->position, ent->rotation, gfc_vector3d(ent->scale.x, ent->scale.y, .1));
 }
 
 void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod) {

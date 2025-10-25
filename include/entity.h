@@ -18,9 +18,11 @@ typedef struct Entity_S {
 	GFC_Vector3D scale;
 	GFC_Box bounds;
 	GFC_Vector3D velocity;
+	Uint8 drawShadow;
 	void (*draw)(struct Entity_S* self);
 	void (*think)(struct Entity_S* self);
 	void (*update)(struct Entity_S* self);
+	void (*free)(struct Entity_S* self);
 	void* data;
 }Entity;
 
