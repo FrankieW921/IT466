@@ -41,18 +41,21 @@ void entity_free(Entity* e);
 */
 void entity_system_init(Uint16 maxEnts);
 
+//@brief closes the entity manager
 void entity_system_close();
-
+//@brief universal entity move function, checks for world collision
 void entity_move(Entity* self);
-
+//@brief draws every entity
+//@param lightPos where to put the light
+//@param colorMod color of the light
 void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod);
-
+//@brief universal entity think function, calls entities personal think if avaiable
 void entity_think(Entity* self);
-
+//@brief thinks every entity
 void entity_think_all();
-
+//@brief universal entity update, calls personal update if available
 void entity_update(Entity* self);
-
+//@brief update every entity
 void entity_update_all();
 
 

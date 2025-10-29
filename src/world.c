@@ -46,6 +46,7 @@ World* world_load(const char* filename) {
 	world->texture = gf3d_texture_load(str);
 	sj_object_get_color_value(config, "color", &world->color);
 	sj_object_get_vector3d(config, "lightPosition", &world->lightPosition);
+	sj_free(json);
 
 	theWorld = world;
 	return world;

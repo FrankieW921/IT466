@@ -26,6 +26,7 @@
 #include "player.h"
 #include "monster.h"
 #include "world.h"
+#include "camera_entity.h"
 
 extern int __DEBUG;
 
@@ -56,6 +57,7 @@ int main(int argc,char *argv[])
 
     World* testworld;
     GFC_Matrix4 testworldID;
+    CameraEntity* ce;
     
     //initializtion    
     parse_arguments(argc,argv);
@@ -78,6 +80,7 @@ int main(int argc,char *argv[])
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     player_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
     monster_spawn(gfc_vector3d(20, 0, 0), GFC_COLOR_BLUE);
+    ce = camera_entity_new();
 
     skybox = gf3d_mesh_load("models/sky/sky.obj");
     skyTexture = gf3d_texture_load("models/sky/sky.png");
@@ -98,6 +101,7 @@ int main(int argc,char *argv[])
                 //3d draws
                 entity_think_all();
                 entity_update_all();
+                camera_think(ce);
                 gf3d_mesh_sky_draw(skybox, skyboxID, GFC_COLOR_WHITE, skyTexture);
                 world_draw(testworld);
                 entity_draw_all(lightPos, GFC_COLOR_WHITE);

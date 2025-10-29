@@ -26,12 +26,13 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	self->texture = gf3d_texture_load("models/enemy4/enemy4.png");
 	self->color = color;
 	self->position = position;
-	self->rotation = gfc_vector3d(0, 0, 0);
+	self->rotation = gfc_vector3d(0, 0, -2 * GFC_PI);
 	//entity defaults to scale of 1, 1, 1
 	self->think = player_think;
 	self->update = player_update;
 
 	player_data_new(data);
+	self->data = data;
 
 	thePlayer = self; //assign static variable
 	return self;
@@ -68,8 +69,14 @@ void player_think(Entity* self) {
 	if (gfc_input_command_down("crouch")) {
 		self->velocity.z -= 1;
 	}
-
 	gfc_vector3d_normalize(&self->velocity);
+
+	if (gfc_input_command_down("panleft")) {
+		self->rotation.z += .1;
+	}
+	if (gfc_input_command_down("panright")) {
+		self->rotation.z -= .1;
+	}
 
 	mouseState = SDL_GetMouseState(&mx, &my);
 }
@@ -89,8 +96,6 @@ void player_update(Entity* self) {
 }
 
 void player_data_new(PlayerData* data) {
-	data = gfc_allocate_array(sizeof(PlayerData), 1);
-
 	data->headInventory = gfc_list_new();
 	data->armInventory = gfc_list_new();
 	data->bodyInventory = gfc_list_new();
