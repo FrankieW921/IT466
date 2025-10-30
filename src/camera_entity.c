@@ -20,11 +20,13 @@ CameraEntity* camera_entity_new() {
 
 void camera_think(CameraEntity* ce) {
 	GFC_Vector3D playerRotation = ce->player->rotation;
-	gfc_vector3d_negate(playerRotation, playerRotation);
-	gfc_vector3d_normalize(&playerRotation);
+	GFC_Vector2D direction2d;
+	direction2d = gfc_vector2d_from_angle(playerRotation.z);
+	gfc_vector2d_normalize(&direction2d);
 
 	GFC_Vector3D positionOffset = gfc_vector3d(-20, -20, 12); //be this far away from the player
 	ce->target = ce->player->position;
+	
 
 	if (gfc_input_command_down("panup")) {
 		ce->zOffset += .3;
@@ -40,8 +42,8 @@ void camera_think(CameraEntity* ce) {
 		ce->zOffset = -2;
 	}
 
-	ce->position.x = ce->player->position.x + (playerRotation.z * positionOffset.x);
-	ce->position.y = ce->player->position.y + (playerRotation.z * positionOffset.y);
+	ce->position.x = ce->player->position.x + (direction2d.x * positionOffset.x);
+	ce->position.y = ce->player->position.y + (direction2d.y * positionOffset.y);
 	ce->position.z = ce->player->position.z + positionOffset.z;
 
 	ce->target.z += ce->zOffset;

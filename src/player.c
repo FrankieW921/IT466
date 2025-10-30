@@ -2,6 +2,7 @@
 #include "gfc_input.h"
 
 #include "player.h"
+#include "camera_entity.h"
 
 static Entity* thePlayer;
 
@@ -41,7 +42,12 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 void player_think(Entity* self) {
 	Uint32 mouseState;
 	PlayerData* data;
+
 	int mx, my;
+	GFC_Vector2D direction2d;
+	float move = 0; 
+	float moveStep = 1.5;
+
 
 	if (!self) return;
 	//data = self->data;
@@ -51,17 +57,38 @@ void player_think(Entity* self) {
 	self->velocity.y = 0;
 	self->velocity.z = 0;
 
+	if (gfc_input_command_down("panleft")) {
+		self->rotation.z += .1;
+	}
+	if (gfc_input_command_down("panright")) {
+		self->rotation.z -= .1;
+	}
+
+	direction2d = gfc_vector2d_from_angle(self->rotation.z);
+	gfc_vector2d_normalize(&direction2d);
 	if (gfc_input_command_down("moveforward")) {
-		self->velocity.y += 1;
+		move += moveStep;
 	}
 	if (gfc_input_command_down("moveback")) {
-		self->velocity.y -= 1;
+		move -= moveStep;
 	}
+	if (move) {
+		gfc_vector2d_scale(direction2d, direction2d, move);
+		gfc_vector2d_add(self->velocity, self->velocity, direction2d);
+	}
+	move = 0;
+	direction2d = gfc_vector2d_from_angle(self->rotation.z);
+	gfc_vector2d_normalize(&direction2d);
+	direction2d = gfc_vector2d_rotate(direction2d, GFC_HALF_PI);
 	if (gfc_input_command_down("moveright")) {
-		self->velocity.x += 1;
+		move -= moveStep;
 	}
 	if (gfc_input_command_down("moveleft")) {
-		self->velocity.x -= 1;
+		move += moveStep;
+	}
+	if (move) {
+		gfc_vector2d_scale(direction2d, direction2d, move);
+		gfc_vector2d_add(self->velocity, self->velocity, direction2d);
 	}
 	if (gfc_input_command_down("jump")) {
 		self->velocity.z += 1;
@@ -69,14 +96,9 @@ void player_think(Entity* self) {
 	if (gfc_input_command_down("crouch")) {
 		self->velocity.z -= 1;
 	}
-	gfc_vector3d_normalize(&self->velocity);
 
-	if (gfc_input_command_down("panleft")) {
-		self->rotation.z += .1;
-	}
-	if (gfc_input_command_down("panright")) {
-		self->rotation.z -= .1;
-	}
+	slog("2D Direction %f, %f", direction2d.x, direction2d.y);
+	slog("Velocity %f, %f", self->velocity.x, self->velocity.y);
 
 	mouseState = SDL_GetMouseState(&mx, &my);
 }
