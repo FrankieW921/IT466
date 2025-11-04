@@ -14,7 +14,7 @@ CameraEntity* camera_entity_new() {
 	}
 	ce->position = gfc_vector3d(0, 0, 0);
 	ce->target = gfc_vector3d(0, 0, 0);
-	ce->zOffset = 8;
+	ce->zOffset = 9;
 	return ce;
 }
 
@@ -38,8 +38,8 @@ void camera_think(CameraEntity* ce) {
 	if (ce->zOffset > 14) {
 		ce->zOffset = 14;
 	}
-	if (ce->zOffset < -2) {
-		ce->zOffset = -2;
+	if (ce->zOffset < 3) {
+		ce->zOffset = 3;
 	}
 
 	ce->position.x = ce->player->position.x + (direction2d.x * positionOffset.x);

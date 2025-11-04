@@ -1,0 +1,25 @@
+{
+  "guns": [
+    {
+      "name": "Scudder",
+      "damage": 200,
+      "cooldown": 20,
+      "mesh": "models/weapons/weapon1.obj",
+      "texture": "models/weapons/weapon1.png"
+    },
+    {
+      "name": "Dual-Auto-Cannon",
+      "damage": 50,
+      "cooldown": 75,
+      "mesh": "models/weapons/weapon2.obj",
+      "texture": "models/weapons/weapon2.png"
+    },
+    {
+      "name": "Karasawa 0",
+      "damage": 150,
+      "cooldown": 15,
+      "mesh": "models/weapons/weapon3.obj",
+      "texture": "models/weapons/weapon3.png"
+    }
+  ]
+}

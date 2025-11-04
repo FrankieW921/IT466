@@ -264,10 +264,12 @@ void gf3d_mesh_free(Mesh* mesh) {
     Uint8               _inuse;
     GFC_List* primitives;
     GFC_Box             bounds; */
-
-    gfc_list_delete(mesh->primitives);
-    //memset?
-    free(mesh);
+    mesh->_refCount--;
+    if (mesh->_refCount == 0) {
+        gfc_list_delete(mesh->primitives);
+        free(mesh);
+    }
+    
 }
 
 void gf3d_mesh_primitive_create_vertex_buffer(MeshPrimitive* primitive) {

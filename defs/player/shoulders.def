@@ -1,0 +1,25 @@
+{
+  "shoulders": [
+    {
+      "name": "Missile Launcher",
+      "damage": 700,
+      "cooldown": 100,
+      "mesh": "models/weapons/shoulder1.obj",
+      "texture": "models/weapons/shoulder1.png"
+    },
+    {
+      "name": "Radar",
+      "damage": 0,
+      "cooldown": 0,
+      "mesh": "models/weapons/shoulder2.obj",
+      "texture": "models/weapons/shoulder2.png"
+    },
+    {
+      "name": "Shield",
+      "damage": 0,
+      "cooldown": 0,
+      "mesh": "models/weapons/shoulder3.obj",
+      "texture": "models/weapons/shoulder3.png"
+    }
+  ]
+}

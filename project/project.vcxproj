@@ -271,6 +271,8 @@
     <None Include="..\defs\player\bodies.def" />
     <None Include="..\defs\player\heads.def" />
     <None Include="..\defs\player\legs.def" />
+    <None Include="..\defs\player\shoulders.def" />
+    <None Include="..\defs\player\guns.def" />
     <None Include="..\defs\terrain\terrain1.def" />
     <None Include="..\shaders\model.frag" />
     <None Include="..\shaders\model.vert" />

@@ -2,19 +2,19 @@
 	"legs":[
 		{
 			"name": "Standard",
-			"mesh": "models/player/leg1.obj",
+			"mesh": "models/player/legs1.obj",
 			"texture": "models/player/mech1texture.png",
 			"health": 1000
 		},
 		{
 			"name": "Speed",
-			"mesh": "models/player/leg2.obj",
+			"mesh": "models/player/legs2.obj",
 			"texture": "models/player/mech2texture.png",
 			"health": 750
 		},
 		{
 			"name": "Bulk",
-			"mesh": "models/player/leg3.obj",
+			"mesh": "models/player/legs3.obj",
 			"texture": "models/player/mech3texture.png",
 			"health": 1300
 		}

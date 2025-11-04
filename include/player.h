@@ -35,6 +35,8 @@ typedef struct {
 	const char* name[128];
 	Uint16 damage;
 	Uint16 cooldown;
+	Mesh* weaponMesh;
+	Texture* weaponTexture;
 }Weapon;
 
 typedef struct {
@@ -45,26 +47,34 @@ typedef struct {
 	Body* body;
 	Arm* arm;
 	Head* head;
-	Weapon* armWeapon;
-	Weapon* shoulderWeapon;
+	Weapon* gun;
+	Weapon* shoulder;
 
 	Uint8			headIndex;
 	Uint8			armIndex;
 	Uint8			bodyIndex;
 	Uint8			legIndex;
+	Uint8			gunIndex;
+	Uint8			shoulderIndex;
 	Uint8			headIndexMax;
 	Uint8			armIndexMax;
 	Uint8			bodyIndexMax;
 	Uint8			legIndexMax;
+	Uint8			gunIndexMax;
+	Uint8			shoulderIndexMax;
 
 	SJson* heads;
 	SJson* arms;
 	SJson* bodies;
 	SJson* legs;
+	SJson* guns;
+	SJson* shoulders;
 	GFC_List* headInventory;
 	GFC_List* armInventory;
 	GFC_List* bodyInventory;
 	GFC_List* legInventory;
+	GFC_List* gunInventory;
+	GFC_List* shoulderInventory;
 }PlayerData;
 
 //@brief returns the global static player
@@ -79,5 +89,17 @@ void player_update(Entity* self);
 void player_data_new(PlayerData* data);
 //@brief draws the player (body parts, weapons)
 void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod);
+
+void player_set_head(Head* currentHead, SJson* selectedHead);
+
+void player_set_arm(Arm* currentArm, SJson* selectedArm);
+
+void player_set_body(Body* currentBody, SJson* selectedBody);
+
+void player_set_leg(Leg* currentLeg, SJson* selectedLeg);
+
+void player_set_weapon(Weapon* currentWeapon, SJson* selectedWeapon);
+
+void player_add_head(PlayerData* pData, SJson* headToAdd);
 
 #endif
