@@ -69,7 +69,6 @@ void entity_move(Entity* self) {
 
 	gfc_vector3d_copy(positionPre, self->position);
 	gfc_vector3d_add(positionPost, self->position, self->velocity);
-
 	if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
 		slog("CONTACT %f, %f, %f", contact.x, contact.y, contact.z);
 		
@@ -77,6 +76,10 @@ void entity_move(Entity* self) {
 	else {
 		gfc_vector3d_copy(self->position, positionPost);
 	}
+
+	gfc_vector2d_scale(self->velocity, self->velocity, .90);
+	if (self->velocity.x < .05 && self->velocity.x > -.05)self->velocity.x = 0;
+	if (self->velocity.y < .05 && self->velocity.y > -.05)self->velocity.y = 0;
 	
 	gfc_box_cpy(bounds, self->bounds); //start of collision checking
 	gfc_vector3d_add(bounds, bounds, self->velocity);
@@ -89,13 +92,20 @@ Uint8 entity_floor_check(Entity* self) {
 void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color colorMod) {
 	GFC_Matrix4 modelMat;
 	if (!ent) return;
-	gfc_matrix4_from_vectors(modelMat, ent->position, ent->rotation, ent->scale);
-	gf3d_mesh_draw(ent->mesh,
-		modelMat,
-		ent->color,
-		ent->texture,
-		lightPos,
-		colorMod);
+
+	if (ent->draw) {
+		ent->draw(ent, lightPos, colorMod);
+	}
+
+	else {
+		gfc_matrix4_from_vectors(modelMat, ent->position, ent->rotation, ent->scale);
+		gf3d_mesh_draw(ent->mesh,
+			modelMat,
+			ent->color,
+			ent->texture,
+			lightPos,
+			colorMod);
+	}
 }
 
 void entity_draw_shadow(Entity* ent) {

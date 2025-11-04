@@ -267,6 +267,10 @@
     <None Include="..\config\overlay_pipeline.cfg" />
     <None Include="..\config\setup.cfg" />
     <None Include="..\config\sky_pipeline.cfg" />
+    <None Include="..\defs\player\arms.def" />
+    <None Include="..\defs\player\bodies.def" />
+    <None Include="..\defs\player\heads.def" />
+    <None Include="..\defs\player\legs.def" />
     <None Include="..\defs\terrain\terrain1.def" />
     <None Include="..\shaders\model.frag" />
     <None Include="..\shaders\model.vert" />

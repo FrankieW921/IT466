@@ -424,5 +424,17 @@
     <None Include="..\defs\terrain\terrain1.def">
       <Filter>Resource Files\defs\terrain</Filter>
     </None>
+    <None Include="..\defs\player\arms.def">
+      <Filter>Resource Files\defs</Filter>
+    </None>
+    <None Include="..\defs\player\bodies.def">
+      <Filter>Resource Files\defs</Filter>
+    </None>
+    <None Include="..\defs\player\heads.def">
+      <Filter>Resource Files\defs</Filter>
+    </None>
+    <None Include="..\defs\player\legs.def">
+      <Filter>Resource Files\defs</Filter>
+    </None>
   </ItemGroup>
 </Project>

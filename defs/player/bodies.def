@@ -1,0 +1,22 @@
+{
+	"bodies":[
+		{
+			"name": "Standard",
+			"mesh": "models/player/body1.obj",
+			"texture": "models/player/mech1texture.png",
+			"health": 2500
+		},
+		{
+			"name": "Speed",
+			"mesh": "models/player/body2.obj",
+			"texture": "models/player/mech2texture.png",
+			"health": 1300
+		},
+		{
+			"name": "Bulk",
+			"mesh": "models/player/body3.obj",
+			"texture": "models/player/mech3texture.png",
+			"health": 3250
+		}
+	]
+}

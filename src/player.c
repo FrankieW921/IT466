@@ -46,15 +46,14 @@ void player_think(Entity* self) {
 	int mx, my;
 	GFC_Vector2D direction2d;
 	float move = 0; 
-	float moveStep = 1.5;
-
+	float moveStep = .35;
 
 	if (!self) return;
 	//data = self->data;
 	//if (!data) return;
 
-	self->velocity.x = 0;
-	self->velocity.y = 0;
+	//self->velocity.x = 0;
+	//self->velocity.y = 0;
 	self->velocity.z = 0;
 
 	if (gfc_input_command_down("panleft")) {
@@ -97,9 +96,6 @@ void player_think(Entity* self) {
 		self->velocity.z -= 1;
 	}
 
-	slog("2D Direction %f, %f", direction2d.x, direction2d.y);
-	slog("Velocity %f, %f", self->velocity.x, self->velocity.y);
-
 	mouseState = SDL_GetMouseState(&mx, &my);
 }
 
@@ -117,9 +113,72 @@ void player_update(Entity* self) {
 	self->bounds.z = self->position.z;
 }
 
-void player_data_new(PlayerData* data) {
+void player_data_new(PlayerData* data) { //hardcode the stuff for now
+	Head* head;
+	Arm* arm;
+	Body* body;
+	Leg* leg;
+	SJson* defArray, *partDef;
+
+	//data = gfc_allocate_array(sizeof(PlayerData), 1); done in player spawn, change?
+	data->leg = gfc_allocate_array(sizeof(Leg), 1); //player personal parts
+	data->body = gfc_allocate_array(sizeof(Body), 1);
+	data->arm = gfc_allocate_array(sizeof(Arm), 1);
+	data->head = gfc_allocate_array(sizeof(Head), 1);
+
+	leg = gfc_allocate_array(sizeof(Leg), 1); //general part pointers
+	body = gfc_allocate_array(sizeof(Body), 1);
+	arm = gfc_allocate_array(sizeof(Arm), 1);
+	head = gfc_allocate_array(sizeof(Head), 1);
+
+	data->heads = sj_load("defs/player/arms.def");
+	data->arms = sj_load("defs/player/arms.def");
+	data->bodies = sj_load("defs/player/bodies.def");
+	data->legs = sj_load("defs/player/legs.def");
+
+	defArray = sj_object_get_value(data->heads, "heads");
+	partDef = sj_array_get_nth(defArray, 0);
+	
+
+	defArray = sj_object_get_value(data->arms, "arms");
+
+
+	defArray = sj_object_get_value(data->bodies, "bodies");
+
+
+	defArray = sj_object_get_value(data->legs, "legs");
+
 	data->headInventory = gfc_list_new();
 	data->armInventory = gfc_list_new();
 	data->bodyInventory = gfc_list_new();
 	data->legInventory = gfc_list_new();
+}
+
+void player_set_head(Head* currentHead, SJson* selectedHead) {
+	const char* meshPath;
+	const char* texturePath;
+	if (!currentHead) {
+		return;
+	}
+	strcpy(currentHead->name, sj_object_get_value_as_string(selectedHead, "name"));
+	sj_object_get_value_as_int(selectedHead, "health", &currentHead->health);
+	meshPath = sj_object_get_value_as_string(selectedHead, "mesh");
+	texturePath = sj_object_get_value_as_string(selectedHead, "texture");
+
+	/*
+	if (currentHead->headSprite) {
+		gf2d_sprite_free(currentHead->headSprite);
+	}
+	currentHead->headSprite = gf2d_sprite_load_all(
+		imageString,
+		32,
+		32,
+		0,
+		0
+	);
+	*/
+}
+
+void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod) {
+
 }
