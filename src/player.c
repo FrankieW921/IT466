@@ -2,6 +2,7 @@
 #include "gfc_input.h"
 
 #include "player.h"
+#include "world.h"
 #include "camera_entity.h"
 
 static Entity* thePlayer;
@@ -50,20 +51,16 @@ void player_think(Entity* self) {
 	float moveStep = .35;
 
 	if (!self) return;
-	//data = self->data;
-	//if (!data) return;
-
-	//self->velocity.x = 0;
-	//self->velocity.y = 0;
-	self->velocity.z = 0;
-
+	data = self->data;
+	if (!data) return;
+	//rotate player
 	if (gfc_input_command_down("panleft")) {
 		self->rotation.z += .1;
 	}
 	if (gfc_input_command_down("panright")) {
 		self->rotation.z -= .1;
 	}
-
+	//x and y movement of player
 	direction2d = gfc_vector2d_from_angle(self->rotation.z);
 	gfc_vector2d_normalize(&direction2d);
 	if (gfc_input_command_down("moveforward")) {
@@ -90,11 +87,27 @@ void player_think(Entity* self) {
 		gfc_vector2d_scale(direction2d, direction2d, move);
 		gfc_vector2d_add(self->velocity, self->velocity, direction2d);
 	}
+	//player jumping/flying
+	if (data->movementState == MS_FLYING) data->movementState = MS_FALLING;
 	if (gfc_input_command_down("jump")) {
-		self->velocity.z += 1;
+		data->movementState = MS_FLYING;
 	}
 	if (gfc_input_command_down("crouch")) {
-		self->velocity.z -= 1;
+		//self->velocity.z -= 1;
+	}
+	//change z velocity based on MS
+	switch (data->movementState) {
+		case MS_ON_GROUND:
+			self->velocity.z = 0;
+			break;
+		case MS_FALLING:
+			self->velocity.z -= .05;
+			if (self->velocity.z < -3) self->velocity.z = -3;
+			break;
+		case MS_FLYING:
+			self->velocity.z += .03;
+			if (self->velocity.z > 2) self->velocity.z = 2;
+			break;
 	}
 
 	mouseState = SDL_GetMouseState(&mx, &my);
@@ -107,32 +120,94 @@ void player_update(Entity* self) {
 	//data = self->data;
 	//if (!data) return;
 
-	entity_move(self); 
+	player_move(self); 
 
 	self->bounds.x = self->position.x;
 	self->bounds.y = self->position.y;
 	self->bounds.z = self->position.z;
 }
 
+void player_move(Entity* self) {
+	GFC_Box bounds;
+	PlayerData* data;
+	GFC_Vector3D positionPre, positionPost, contact;
+	GFC_Vector2D direction2d;
+	if (!self) return;
+	data = self->data;
+	if (!data) return;
+
+	direction2d = gfc_vector2d_from_angle(self->rotation.z);
+	gfc_vector2d_normalize(&direction2d);
+	gfc_vector3d_copy(positionPre, self->position);
+	gfc_vector3d_add(positionPost, self->position, self->velocity);
+	
+	switch(data->movementState){
+		case MS_ON_GROUND:
+			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) { //should just be wall touch
+				self->position.z = entity_floor_check(self) + .01;
+				//slog("CONTACT: %f %f %f", contact.x, contact.y, contact.z);
+			}
+			else { //not touching wall
+				gfc_vector3d_copy(self->position, positionPost);
+				self->position.z = entity_floor_check(self) + .01;
+			}
+			break;
+		case MS_FALLING:
+			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
+				if (contact.z == entity_floor_check(self)) { //you touched the ground, skips a frame of movement i think but its okay
+					data->movementState = MS_ON_GROUND;
+					self->position.z = entity_floor_check(self) + .01;
+				}
+				else { //you touched a wall while falling
+					self->position.z += self->velocity.z;
+				}
+			}
+			else { //freefall
+				gfc_vector3d_copy(self->position, positionPost);
+			}
+			break;
+		case MS_FLYING: //TODO
+			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
+				if (contact.z == entity_roof_check(self)) { //touched the roof
+					//no movement
+					self->position.z = entity_roof_check(self) - .1;
+				}
+				else { //touched a wall while flying
+					self->position.z += self->velocity.z;
+				}
+			}
+			else { //freefly
+				gfc_vector3d_copy(self->position, positionPost);
+			}
+			break;
+	}
+	/*
+	if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
+		slog("CONTACT: %f %f %f", contact.x, contact.y, contact.z);
+	}
+	else {
+		gfc_vector3d_copy(self->position, positionPost);
+	}
+	*/
+	gfc_vector2d_scale(self->velocity, self->velocity, .90);
+	if (self->velocity.x < .05 && self->velocity.x > -.05)self->velocity.x = 0;
+	if (self->velocity.y < .05 && self->velocity.y > -.05)self->velocity.y = 0;
+
+	gfc_box_cpy(bounds, self->bounds); //start of collision checking
+	gfc_vector3d_add(bounds, bounds, self->velocity);
+}
+
 void player_data_new(PlayerData* data) { //hardcode the stuff for now
-	Head* head;
-	Arm* arm;
-	Body* body;
-	Leg* leg;
 	SJson* defArray, *part;
 
-	//data = gfc_allocate_array(sizeof(PlayerData), 1); done in player spawn, change?
+	data->movementState = MS_ON_GROUND;
+
 	data->leg = gfc_allocate_array(sizeof(Leg), 1); //player personal parts
 	data->body = gfc_allocate_array(sizeof(Body), 1);
 	data->arm = gfc_allocate_array(sizeof(Arm), 1);
 	data->head = gfc_allocate_array(sizeof(Head), 1);
 	data->gun = gfc_allocate_array(sizeof(Weapon), 1);
 	data->shoulder = gfc_allocate_array(sizeof(Weapon), 1);
-
-	leg = gfc_allocate_array(sizeof(Leg), 1); //general part pointers (might not need);
-	body = gfc_allocate_array(sizeof(Body), 1);
-	arm = gfc_allocate_array(sizeof(Arm), 1);
-	head = gfc_allocate_array(sizeof(Head), 1);
 
 	data->headInventory = gfc_list_new();
 	data->armInventory = gfc_list_new();
@@ -149,11 +224,11 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	data->shoulders = sj_load("defs/player/shoulders.def");
 
 	defArray = sj_object_get_value(data->heads, "heads");
-	part = sj_array_get_nth(defArray, 2);
+	part = sj_array_get_nth(defArray, 1);
 	player_set_head(data->head, part); 
 
 	defArray = sj_object_get_value(data->arms, "arms");
-	part = sj_array_get_nth(defArray, 2);
+	part = sj_array_get_nth(defArray, 1);
 	player_set_arm(data->arm, part);
 
 	defArray = sj_object_get_value(data->bodies, "bodies");
@@ -161,15 +236,15 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	player_set_body(data->body, part);
 
 	defArray = sj_object_get_value(data->legs, "legs");
-	part = sj_array_get_nth(defArray, 2);
+	part = sj_array_get_nth(defArray, 1);
 	player_set_leg(data->leg, part);
 
 	defArray = sj_object_get_value(data->guns, "guns");
-	part = sj_array_get_nth(defArray, 1);
+	part = sj_array_get_nth(defArray, 0);
 	player_set_weapon(data->gun, part);
 
 	defArray = sj_object_get_value(data->shoulders, "shoulders");
-	part = sj_array_get_nth(defArray, 2);
+	part = sj_array_get_nth(defArray, 0);
 	player_set_weapon(data->shoulder, part);
 }
 

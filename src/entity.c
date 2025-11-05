@@ -71,7 +71,6 @@ void entity_move(Entity* self) {
 	gfc_vector3d_add(positionPost, self->position, self->velocity);
 	if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
 		slog("CONTACT %f, %f, %f", contact.x, contact.y, contact.z);
-		
 	}
 	else {
 		gfc_vector3d_copy(self->position, positionPost);
@@ -85,8 +84,24 @@ void entity_move(Entity* self) {
 	gfc_vector3d_add(bounds, bounds, self->velocity);
 }
 
-Uint8 entity_floor_check(Entity* self) {
+float entity_floor_check(Entity* self) {
+	GFC_Vector3D positionPre, downPos, contact;
+	gfc_vector3d_copy(positionPre, self->position);
+	gfc_vector3d_add(downPos, self->position, gfc_vector3d(0, 0, -10000));
+	if (world_edge_test(get_the_world(), positionPre, downPos, &contact)) {
+		return contact.z;
+	}
+	return 0;
+}
 
+float entity_roof_check(Entity* self) {
+	GFC_Vector3D positionPre, downPos, contact;
+	gfc_vector3d_copy(positionPre, self->position);
+	gfc_vector3d_add(downPos, self->position, gfc_vector3d(0, 0, 10000));
+	if (world_edge_test(get_the_world(), positionPre, downPos, &contact)) {
+		return contact.z;
+	}
+	return 99999;
 }
 
 void entity_draw(Entity* ent, GFC_Vector3D lightPos, GFC_Color colorMod) {

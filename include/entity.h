@@ -45,6 +45,10 @@ void entity_system_init(Uint16 maxEnts);
 void entity_system_close();
 //@brief universal entity move function, checks for world collision
 void entity_move(Entity* self);
+
+float entity_floor_check(Entity* self);
+
+float entity_roof_check(Entity* self);
 //@brief draws every entity
 //@param lightPos where to put the light
 //@param colorMod color of the light

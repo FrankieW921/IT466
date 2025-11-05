@@ -39,9 +39,18 @@ typedef struct {
 	Texture* weaponTexture;
 }Weapon;
 
+typedef enum {
+	MS_ON_GROUND,
+	MS_FALLING,
+	MS_FLYING
+}MovementState;
+
 typedef struct {
 	Sint32			maxHealth;
 	Sint32			currentHealth;
+	Uint8			movementState;
+	Sint32			maxFuel;
+	Sint32			currentFuel;
 
 	Leg* leg;
 	Body* body;
@@ -85,6 +94,8 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color);
 void player_think(Entity* self);
 //@brief unique player update
 void player_update(Entity* self);
+//@brief player dedicated move function, moves the player using their current state and world edge tests
+void player_move(Entity* self);
 //@brief populates a player's void data* with PlayerData
 void player_data_new(PlayerData* data);
 //@brief draws the player (body parts, weapons)
