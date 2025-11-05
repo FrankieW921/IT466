@@ -91,7 +91,7 @@ float entity_floor_check(Entity* self) {
 	if (world_edge_test(get_the_world(), positionPre, downPos, &contact)) {
 		return contact.z;
 	}
-	return 0;
+	return -99999;
 }
 
 float entity_roof_check(Entity* self) {

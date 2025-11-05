@@ -143,13 +143,18 @@ void player_move(Entity* self) {
 	
 	switch(data->movementState){
 		case MS_ON_GROUND:
-			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) { //should just be wall touch
+			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)){ //wall touch
 				self->position.z = entity_floor_check(self) + .01;
 				//slog("CONTACT: %f %f %f", contact.x, contact.y, contact.z);
 			}
+			else if (positionPre.z - entity_floor_check(self) > .02) { //walked off a ledge
+				data->movementState = MS_FALLING;
+				self->position.x = positionPost.x;
+				self->position.y = positionPost.y;
+			}
 			else { //not touching wall
 				gfc_vector3d_copy(self->position, positionPost);
-				self->position.z = entity_floor_check(self) + .01;
+				//self->position.z = entity_floor_check(self) + .01;
 			}
 			break;
 		case MS_FALLING:
@@ -162,15 +167,26 @@ void player_move(Entity* self) {
 					self->position.z += self->velocity.z;
 				}
 			}
+			else if (entity_floor_check(self) == -99999) { //no floor below
+				gfc_vector3d_copy(self->position, positionPost);
+				if (entity_roof_check(self) < 99999) { //check that there's a cieling to snap to
+					self->position.z = entity_roof_check(self) + .01;
+					data->movementState = MS_ON_GROUND;
+				}
+			}
 			else { //freefall
 				gfc_vector3d_copy(self->position, positionPost);
 			}
 			break;
-		case MS_FLYING: //TODO
+		case MS_FLYING:
 			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
 				if (contact.z == entity_roof_check(self)) { //touched the roof
 					//no movement
 					self->position.z = entity_roof_check(self) - .1;
+				}
+				else if (contact.z == entity_floor_check(self)) { //was falling when you started to fly and the momentum still carried you to touch the ground
+					self->position.z = entity_floor_check(self) + .1;
+					self->velocity.z = 0;
 				}
 				else { //touched a wall while flying
 					self->position.z += self->velocity.z;
