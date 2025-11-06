@@ -39,6 +39,13 @@ typedef struct {
 	Texture* weaponTexture;
 }Weapon;
 
+typedef struct {
+	Uint8 enabled;
+	const char* partCategory[16];
+	const char* partName[128];
+
+}PlayerUI;
+
 typedef enum {
 	MS_ON_GROUND,
 	MS_FALLING,
@@ -111,6 +118,18 @@ void player_set_leg(Leg* currentLeg, SJson* selectedLeg);
 
 void player_set_weapon(Weapon* currentWeapon, SJson* selectedWeapon);
 
+void player_next_head(Entity* self);
+void player_next_arm(Entity* self);
+void player_next_body(Entity* self);
+void player_next_leg(Entity* self);
+void player_next_gun(Entity* self);
+void player_next_shoulder(Entity* self);
+
 void player_add_head(PlayerData* pData, SJson* headToAdd);
+void player_add_arm(PlayerData* pData, SJson* armToAdd);
+void player_add_body(PlayerData* pData, SJson* bodyToAdd);
+void player_add_leg(PlayerData* pData, SJson* legToAdd);
+void player_add_gun(PlayerData* pData, SJson* weaponToAdd);
+void player_add_shoulder(PlayerData* pData, SJson* weaponToAdd);
 
 #endif

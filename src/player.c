@@ -7,6 +7,8 @@
 
 static Entity* thePlayer;
 
+static Uint8 partSwapCooldown = 0;
+
 Entity* get_the_player() {
 	if (!thePlayer) {
 		slog("No static player to return");
@@ -53,6 +55,11 @@ void player_think(Entity* self) {
 	if (!self) return;
 	data = self->data;
 	if (!data) return;
+
+	if (partSwapCooldown > 0) {
+		partSwapCooldown -= 1;
+	}
+
 	//rotate player
 	if (gfc_input_command_down("panleft")) {
 		self->rotation.z += .1;
@@ -92,9 +99,7 @@ void player_think(Entity* self) {
 	if (gfc_input_command_down("jump")) {
 		data->movementState = MS_FLYING;
 	}
-	if (gfc_input_command_down("crouch")) {
-		//self->velocity.z -= 1;
-	}
+
 	//change z velocity based on MS
 	switch (data->movementState) {
 		case MS_ON_GROUND:
@@ -108,6 +113,31 @@ void player_think(Entity* self) {
 			self->velocity.z += .03;
 			if (self->velocity.z > 2) self->velocity.z = 2;
 			break;
+	}
+
+	if (gfc_input_command_down("nextHead") && partSwapCooldown == 0) {
+		player_next_head(self);
+		partSwapCooldown = 60;
+	}
+	if (gfc_input_command_down("nextArm") && partSwapCooldown == 0) {
+		player_next_arm(self);
+		partSwapCooldown = 60;
+	}
+	if (gfc_input_command_down("nextBody") && partSwapCooldown == 0) {
+		player_next_body(self);
+		partSwapCooldown = 60;
+	}
+	if (gfc_input_command_down("nextLeg") && partSwapCooldown == 0) {
+		player_next_leg(self);
+		partSwapCooldown = 60;
+	}
+	if (gfc_input_command_down("nextGun") && partSwapCooldown == 0) {
+		player_next_gun(self);
+		partSwapCooldown = 60;
+	}
+	if (gfc_input_command_down("nextShoulder") && partSwapCooldown == 0) {
+		player_next_shoulder(self);
+		partSwapCooldown = 60;
 	}
 
 	mouseState = SDL_GetMouseState(&mx, &my);
@@ -214,6 +244,10 @@ void player_move(Entity* self) {
 }
 
 void player_data_new(PlayerData* data) { //hardcode the stuff for now
+	Head* headG; //generics for setting
+	Arm* armG;
+	Body* bodyG;
+	Leg* legG;
 	SJson* defArray, *part;
 
 	data->movementState = MS_ON_GROUND;
@@ -240,28 +274,46 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	data->shoulders = sj_load("defs/player/shoulders.def");
 
 	defArray = sj_object_get_value(data->heads, "heads");
-	part = sj_array_get_nth(defArray, 1);
-	player_set_head(data->head, part); 
+	for (int i = 0; i < 3; i++) { //3 is the size of the defs
+		part = sj_array_get_nth(defArray, i);
+		player_add_head(data, part);
+	}
+	data->head = gfc_list_get_nth(data->headInventory, 0);
 
 	defArray = sj_object_get_value(data->arms, "arms");
-	part = sj_array_get_nth(defArray, 1);
-	player_set_arm(data->arm, part);
+	for (int i = 0; i < 3; i++) {
+		part = sj_array_get_nth(defArray, i);
+		player_add_arm(data, part);
+	}
+	data->arm = gfc_list_get_nth(data->armInventory, 0);
 
 	defArray = sj_object_get_value(data->bodies, "bodies");
-	part = sj_array_get_nth(defArray, 1);
-	player_set_body(data->body, part);
+	for (int i = 0; i < 3; i++) {
+		part = sj_array_get_nth(defArray, i);
+		player_add_body(data, part);
+	}
+	data->body = gfc_list_get_nth(data->bodyInventory, 0);
 
 	defArray = sj_object_get_value(data->legs, "legs");
-	part = sj_array_get_nth(defArray, 1);
-	player_set_leg(data->leg, part);
+	for (int i = 0; i < 3; i++) {
+		part = sj_array_get_nth(defArray, i);
+		player_add_leg(data, part);
+	}
+	data->leg = gfc_list_get_nth(data->legInventory, 0);
 
 	defArray = sj_object_get_value(data->guns, "guns");
-	part = sj_array_get_nth(defArray, 0);
-	player_set_weapon(data->gun, part);
+	for (int i = 0; i < 3; i++) {
+		part = sj_array_get_nth(defArray, i);
+		player_add_gun(data, part);
+	}
+	data->gun = gfc_list_get_nth(data->gunInventory, 0);
 
 	defArray = sj_object_get_value(data->shoulders, "shoulders");
-	part = sj_array_get_nth(defArray, 0);
-	player_set_weapon(data->shoulder, part);
+	for (int i = 0; i < 3; i++) {
+		part = sj_array_get_nth(defArray, i);
+		player_add_shoulder(data, part);
+	}
+	data->shoulder = gfc_list_get_nth(data->shoulderInventory, 0);
 }
 
 void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod) {
@@ -381,6 +433,84 @@ void player_set_weapon(Weapon* currentWeapon, SJson* selectedWeapon) {
 	currentWeapon->weaponTexture = gf3d_texture_load(texturePath);
 }
 
+void player_next_head(Entity* self) {
+	PlayerData* data;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+
+	data->headIndex += 1;
+	if (data->headIndex >= data->headIndexMax) {
+		data->headIndex = 0;
+	}
+	data->head = gfc_list_get_nth(data->headInventory, data->headIndex);
+}
+
+void player_next_arm(Entity* self) {
+	PlayerData* data;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+
+	data->armIndex += 1;
+	if (data->armIndex >= data->armIndexMax) {
+		data->armIndex = 0;
+	}
+	data->arm = gfc_list_get_nth(data->armInventory, data->armIndex);
+}
+
+void player_next_body(Entity* self) {
+	PlayerData* data;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+
+	data->bodyIndex += 1;
+	if (data->bodyIndex >= data->bodyIndexMax) {
+		data->bodyIndex = 0;
+	}
+	data->body = gfc_list_get_nth(data->bodyInventory, data->bodyIndex);
+}
+
+void player_next_leg(Entity* self) {
+	PlayerData* data;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+
+	data->legIndex += 1;
+	if (data->legIndex >= data->legIndexMax) {
+		data->legIndex = 0;
+	}
+	data->leg = gfc_list_get_nth(data->legInventory, data->legIndex);
+}
+
+void player_next_gun(Entity* self) {
+	PlayerData* data;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+
+	data->gunIndex += 1;
+	if (data->gunIndex >= data->gunIndexMax) {
+		data->gunIndex = 0;
+	}
+	data->gun = gfc_list_get_nth(data->gunInventory, data->gunIndex);
+}
+
+void player_next_shoulder(Entity* self) {
+	PlayerData* data;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+
+	data->shoulderIndex += 1;
+	if (data->shoulderIndex >= data->shoulderIndexMax) {
+		data->shoulderIndex = 0;
+	}
+	data->shoulder = gfc_list_get_nth(data->shoulderInventory, data->shoulderIndex);
+}
+
 void player_add_head(PlayerData* pData, SJson* headToAdd) {
 	const char* meshPath;
 	const char* texturePath;
@@ -396,4 +526,91 @@ void player_add_head(PlayerData* pData, SJson* headToAdd) {
 	head->headTexture = gf3d_texture_load(texturePath);
 	gfc_list_append(pData->headInventory, head);
 	pData->headIndexMax = (Uint8)gfc_list_count(pData->headInventory);
+}
+
+void player_add_arm(PlayerData* pData, SJson* armToAdd) {
+	const char* meshPath;
+	const char* texturePath;
+	Arm* arm;
+	if (!pData || !armToAdd) return NULL;
+	arm = gfc_allocate_array(sizeof(Arm), 1);
+
+	strcpy(arm->name, sj_object_get_value_as_string(armToAdd, "name"));
+	sj_object_get_value_as_int(armToAdd, "health", &arm->health);
+	meshPath = sj_object_get_value_as_string(armToAdd, "mesh");
+	texturePath = sj_object_get_value_as_string(armToAdd, "texture");
+	arm->armMesh = gf3d_mesh_load(meshPath);
+	arm->armTexture = gf3d_texture_load(texturePath);
+	gfc_list_append(pData->armInventory, arm);
+	pData->armIndexMax = (Uint8)gfc_list_count(pData->armInventory);
+}
+
+void player_add_body(PlayerData* pData, SJson* bodyToAdd) {
+	const char* meshPath;
+	const char* texturePath;
+	Body* body;
+	if (!pData || !bodyToAdd) return NULL;
+	body = gfc_allocate_array(sizeof(Body), 1);
+
+	strcpy(body->name, sj_object_get_value_as_string(bodyToAdd, "name"));
+	sj_object_get_value_as_int(bodyToAdd, "health", &body->health);
+	meshPath = sj_object_get_value_as_string(bodyToAdd, "mesh");
+	texturePath = sj_object_get_value_as_string(bodyToAdd, "texture");
+	body->bodyMesh = gf3d_mesh_load(meshPath);
+	body->bodyTexture = gf3d_texture_load(texturePath);
+	gfc_list_append(pData->bodyInventory, body);
+	pData->bodyIndexMax = (Uint8)gfc_list_count(pData->bodyInventory);
+}
+
+void player_add_leg(PlayerData* pData, SJson* legToAdd) {
+	const char* meshPath;
+	const char* texturePath;
+	Leg* leg;
+	if (!pData || !legToAdd) return NULL;
+	leg = gfc_allocate_array(sizeof(Leg), 1);
+
+	strcpy(leg->name, sj_object_get_value_as_string(legToAdd, "name"));
+	sj_object_get_value_as_int(legToAdd, "health", &leg->health);
+	meshPath = sj_object_get_value_as_string(legToAdd, "mesh");
+	texturePath = sj_object_get_value_as_string(legToAdd, "texture");
+	leg->legMesh = gf3d_mesh_load(meshPath);
+	leg->legTexture = gf3d_texture_load(texturePath);
+	gfc_list_append(pData->legInventory, leg);
+	pData->legIndexMax = (Uint8)gfc_list_count(pData->legInventory);
+}
+
+void player_add_gun(PlayerData* pData, SJson* weaponToAdd) {
+	const char* meshPath;
+	const char* texturePath;
+	Weapon* weapon;
+	if (!pData || !weaponToAdd) return NULL;
+	weapon = gfc_allocate_array(sizeof(Weapon), 1);
+
+	strcpy(weapon->name, sj_object_get_value_as_string(weaponToAdd, "name"));
+	sj_object_get_value_as_int(weaponToAdd, "damage", &weapon->damage);
+	sj_object_get_value_as_int(weaponToAdd, "cooldown", &weapon->cooldown);
+	meshPath = sj_object_get_value_as_string(weaponToAdd, "mesh");
+	texturePath = sj_object_get_value_as_string(weaponToAdd, "texture");
+	weapon->weaponMesh = gf3d_mesh_load(meshPath);
+	weapon->weaponTexture = gf3d_texture_load(texturePath);
+	gfc_list_append(pData->gunInventory, weapon);
+	pData->gunIndexMax = (Uint8)gfc_list_count(pData->gunInventory);
+}
+
+void player_add_shoulder(PlayerData* pData, SJson* weaponToAdd) {
+	const char* meshPath;
+	const char* texturePath;
+	Weapon* weapon;
+	if (!pData || !weaponToAdd) return NULL;
+	weapon = gfc_allocate_array(sizeof(Weapon), 1);
+
+	strcpy(weapon->name, sj_object_get_value_as_string(weaponToAdd, "name"));
+	sj_object_get_value_as_int(weaponToAdd, "damage", &weapon->damage);
+	sj_object_get_value_as_int(weaponToAdd, "cooldown", &weapon->cooldown);
+	meshPath = sj_object_get_value_as_string(weaponToAdd, "mesh");
+	texturePath = sj_object_get_value_as_string(weaponToAdd, "texture");
+	weapon->weaponMesh = gf3d_mesh_load(meshPath);
+	weapon->weaponTexture = gf3d_texture_load(texturePath);
+	gfc_list_append(pData->shoulderInventory, weapon);
+	pData->shoulderIndexMax = (Uint8)gfc_list_count(pData->shoulderInventory);
 }

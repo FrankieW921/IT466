@@ -18,7 +18,7 @@ CameraEntity* camera_entity_new() {
 	return ce;
 }
 
-void camera_think(CameraEntity* ce) {
+void camera_think() {
 	GFC_Vector3D playerRotation = ce->player->rotation;
 	GFC_Vector2D direction2d;
 	direction2d = gfc_vector2d_from_angle(playerRotation.z);
@@ -49,5 +49,11 @@ void camera_think(CameraEntity* ce) {
 	ce->target.z += ce->zOffset;
 
 	gf3d_camera_look_at(ce->target, &ce->position);
+}
+
+GFC_Vector3D get_view_vector() {
+	GFC_Vector3D vec = gfc_vector3d(ce->position.x - ce->target.x, ce->position.y - ce->target.y, ce->position.z - ce->target.z);
+	gfc_vector3d_normalize(&vec);
+	return vec;
 }
 

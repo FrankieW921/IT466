@@ -14,6 +14,6 @@ typedef struct {
 
 CameraEntity* camera_entity_new();
 
-void camera_think(CameraEntity* ce);
+void camera_think();
 
 #endif
