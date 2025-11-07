@@ -1,6 +1,8 @@
 #include "simple_logger.h"
 #include "gfc_input.h"
 
+#include "gf2d_font.h"
+
 #include "player.h"
 #include "world.h"
 #include "camera_entity.h"
@@ -38,6 +40,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 
 	player_data_new(data);
 	self->data = data;
+	player_do_max_health(self);
 
 	thePlayer = self; //assign static variable
 	return self;
@@ -252,6 +255,10 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 
 	data->movementState = MS_ON_GROUND;
 
+	data->ui = gfc_allocate_array(sizeof(PlayerUI), 1);
+	data->ui->enabled = 0;
+	data->ui->selectedCategory = 0; //0 for Heads by default
+		
 	data->leg = gfc_allocate_array(sizeof(Leg), 1); //player personal parts
 	data->body = gfc_allocate_array(sizeof(Body), 1);
 	data->arm = gfc_allocate_array(sizeof(Arm), 1);
@@ -314,6 +321,7 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 		player_add_shoulder(data, part);
 	}
 	data->shoulder = gfc_list_get_nth(data->shoulderInventory, 0);
+	player_ui_update(data);
 }
 
 void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod) {
@@ -331,6 +339,44 @@ void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod) {
 	gf3d_mesh_draw(pData->leg->legMesh, modelMat, self->color, pData->leg->legTexture, lightPos, colorMod);
 	gf3d_mesh_draw(pData->gun->weaponMesh, modelMat, self->color, pData->gun->weaponTexture, lightPos, colorMod);
 	gf3d_mesh_draw(pData->shoulder->weaponMesh, modelMat, self->color, pData->shoulder->weaponTexture, lightPos, colorMod);
+}
+
+void player_ui_update(PlayerData* data) {
+	char* numBuffer[10];
+	if (!data) return;
+	switch (data->ui->selectedCategory) {
+		case 0:
+			strcpy(data->ui->partDescription1, "Heads");
+			strcpy(data->ui->partDescription2, "Part: ");
+			strcat(data->ui->partDescription2, data->head->name);
+			strcpy(data->ui->partDescription3, "AP: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->head->health);
+			strcat(data->ui->partDescription3, numBuffer);
+			strcpy(data->ui->partDescription4, "");
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+	}
+}
+
+void player_ui_draw() { //use static player instance to be easily accesible in game.c
+	PlayerData* data;
+	if (!thePlayer) return;
+	data = thePlayer->data;
+	if (!data) return;
+	
+	gf2d_font_draw_line_tag(data->ui->partDescription1, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 500));
+	gf2d_font_draw_line_tag(data->ui->partDescription2, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 530));
+	gf2d_font_draw_line_tag(data->ui->partDescription3, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 560));
+	gf2d_font_draw_line_tag(data->ui->partDescription4, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 590));
 }
 
 void player_set_head(Head* currentHead, SJson* selectedHead) {
@@ -509,6 +555,23 @@ void player_next_shoulder(Entity* self) {
 		data->shoulderIndex = 0;
 	}
 	data->shoulder = gfc_list_get_nth(data->shoulderInventory, data->shoulderIndex);
+}
+
+void player_do_max_health(Entity* self) {
+	PlayerData* data;
+	int countHealth = 0;
+	if (!self)return;
+	data = self->data;
+	if (!data)return;
+	countHealth += data->head->health;
+	countHealth += data->arm->health;
+	countHealth += data->body->health;
+	countHealth += data->leg->health;
+	data->maxHealth = countHealth;
+	if (data->currentHealth > data->maxHealth) {
+		data->currentHealth = data->maxHealth;
+	}
+	slog("New Player Max Health: %i", data->maxHealth);
 }
 
 void player_add_head(PlayerData* pData, SJson* headToAdd) {

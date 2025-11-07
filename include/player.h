@@ -41,9 +41,11 @@ typedef struct {
 
 typedef struct {
 	Uint8 enabled;
-	const char* partCategory[16];
-	const char* partName[128];
-
+	Uint8 selectedCategory; //0 for heads, 5 for shoulders
+	const char* partDescription1[128];
+	const char* partDescription2[128];
+	const char* partDescription3[128];
+	const char* partDescription4[128];
 }PlayerUI;
 
 typedef enum {
@@ -58,6 +60,8 @@ typedef struct {
 	Uint8			movementState;
 	Sint32			maxFuel;
 	Sint32			currentFuel;
+	Sint32			dashCooldown;
+	PlayerUI*		ui;
 
 	Leg* leg;
 	Body* body;
@@ -66,7 +70,7 @@ typedef struct {
 	Weapon* gun;
 	Weapon* shoulder;
 
-	Uint8			headIndex;
+	Uint8			headIndex; //map to the lists
 	Uint8			armIndex;
 	Uint8			bodyIndex;
 	Uint8			legIndex;
@@ -79,7 +83,7 @@ typedef struct {
 	Uint8			gunIndexMax;
 	Uint8			shoulderIndexMax;
 
-	SJson* heads;
+	SJson* heads; //store the def files because why not
 	SJson* arms;
 	SJson* bodies;
 	SJson* legs;
@@ -108,6 +112,10 @@ void player_data_new(PlayerData* data);
 //@brief draws the player (body parts, weapons)
 void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod);
 
+void player_ui_update(PlayerData* data);
+
+void player_ui_draw();
+
 void player_set_head(Head* currentHead, SJson* selectedHead);
 
 void player_set_arm(Arm* currentArm, SJson* selectedArm);
@@ -124,6 +132,8 @@ void player_next_body(Entity* self);
 void player_next_leg(Entity* self);
 void player_next_gun(Entity* self);
 void player_next_shoulder(Entity* self);
+
+void player_do_max_health(Entity* self);
 
 void player_add_head(PlayerData* pData, SJson* headToAdd);
 void player_add_arm(PlayerData* pData, SJson* armToAdd);
