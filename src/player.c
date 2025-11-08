@@ -10,6 +10,7 @@
 static Entity* thePlayer;
 
 static Uint8 partSwapCooldown = 0;
+static Uint8 fuelRecharge = 0;
 
 Entity* get_the_player() {
 	if (!thePlayer) {
@@ -41,6 +42,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	player_data_new(data);
 	self->data = data;
 	player_do_max_health(self);
+	data->currentHealth = data->maxHealth;
 
 	thePlayer = self; //assign static variable
 	return self;
@@ -52,6 +54,7 @@ void player_think(Entity* self) {
 
 	int mx, my;
 	GFC_Vector2D direction2d;
+	Uint8 partChanged = 0;
 	float move = 0; 
 	float moveStep = .35;
 
@@ -61,6 +64,9 @@ void player_think(Entity* self) {
 
 	if (partSwapCooldown > 0) {
 		partSwapCooldown -= 1;
+	}
+	if (fuelRecharge > 0) {
+		fuelRecharge -= 1;
 	}
 
 	//rotate player
@@ -118,29 +124,84 @@ void player_think(Entity* self) {
 			break;
 	}
 
-	if (gfc_input_command_down("nextHead") && partSwapCooldown == 0) {
-		player_next_head(self);
+	if (gfc_input_command_down("nextHead") && partSwapCooldown == 0 && data->ui->enabled == 1) {
+		if (data->ui->selectedCategory == 0) {
+			player_next_head(self);
+		}
+		else {
+			data->ui->selectedCategory = 0;
+		}
+		player_ui_update(data);
 		partSwapCooldown = 60;
+		partChanged = 1;
 	}
-	if (gfc_input_command_down("nextArm") && partSwapCooldown == 0) {
-		player_next_arm(self);
+	if (gfc_input_command_down("nextArm") && partSwapCooldown == 0 && data->ui->enabled == 1) {
+		if (data->ui->selectedCategory == 1) {
+			player_next_arm(self);
+		}
+		else {
+			data->ui->selectedCategory = 1;
+		}
+		player_ui_update(data);
 		partSwapCooldown = 60;
+		partChanged = 1;
 	}
-	if (gfc_input_command_down("nextBody") && partSwapCooldown == 0) {
-		player_next_body(self);
+	if (gfc_input_command_down("nextBody") && partSwapCooldown == 0 && data->ui->enabled == 1) {
+		if (data->ui->selectedCategory == 2) {
+			player_next_body(self);
+		}
+		else {
+			data->ui->selectedCategory = 2;
+		}
+		player_ui_update(data);
 		partSwapCooldown = 60;
+		partChanged = 1;
 	}
-	if (gfc_input_command_down("nextLeg") && partSwapCooldown == 0) {
-		player_next_leg(self);
+	if (gfc_input_command_down("nextLeg") && partSwapCooldown == 0 && data->ui->enabled == 1) {
+		if (data->ui->selectedCategory == 3) {
+			player_next_leg(self);
+		}
+		else {
+			data->ui->selectedCategory = 3;
+		}
+		player_ui_update(data);
 		partSwapCooldown = 60;
+		partChanged = 1;
 	}
-	if (gfc_input_command_down("nextGun") && partSwapCooldown == 0) {
-		player_next_gun(self);
+	if (gfc_input_command_down("nextGun") && partSwapCooldown == 0 && data->ui->enabled == 1) {
+		if (data->ui->selectedCategory == 4) {
+			player_next_gun(self);
+		}
+		else {
+			data->ui->selectedCategory = 4;
+		}
+		player_ui_update(data);
 		partSwapCooldown = 60;
+		partChanged = 1;
 	}
-	if (gfc_input_command_down("nextShoulder") && partSwapCooldown == 0) {
-		player_next_shoulder(self);
+	if (gfc_input_command_down("nextShoulder") && partSwapCooldown == 0 && data->ui->enabled == 1) {
+		if (data->ui->selectedCategory == 5) {
+			player_next_shoulder(self);
+		}
+		else {
+			data->ui->selectedCategory = 5;
+		}
+		player_ui_update(data);
 		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("partUIToggle") && partSwapCooldown == 0) {
+		if (data->ui->enabled == 1) {
+			data->ui->enabled = 0;
+		}
+		else if (data->ui->enabled == 0) {
+			data->ui->enabled = 1;
+		}
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (partChanged == 1) {
+		player_do_max_health(self);
 	}
 
 	mouseState = SDL_GetMouseState(&mx, &my);
@@ -230,14 +291,6 @@ void player_move(Entity* self) {
 			}
 			break;
 	}
-	/*
-	if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
-		slog("CONTACT: %f %f %f", contact.x, contact.y, contact.z);
-	}
-	else {
-		gfc_vector3d_copy(self->position, positionPost);
-	}
-	*/
 	gfc_vector2d_scale(self->velocity, self->velocity, .90);
 	if (self->velocity.x < .05 && self->velocity.x > -.05)self->velocity.x = 0;
 	if (self->velocity.y < .05 && self->velocity.y > -.05)self->velocity.y = 0;
@@ -256,7 +309,7 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	data->movementState = MS_ON_GROUND;
 
 	data->ui = gfc_allocate_array(sizeof(PlayerUI), 1);
-	data->ui->enabled = 0;
+	data->ui->enabled = 1;
 	data->ui->selectedCategory = 0; //0 for Heads by default
 		
 	data->leg = gfc_allocate_array(sizeof(Leg), 1); //player personal parts
@@ -355,28 +408,76 @@ void player_ui_update(PlayerData* data) {
 			strcpy(data->ui->partDescription4, "");
 			break;
 		case 1:
+			strcpy(data->ui->partDescription1, "Arms");
+			strcpy(data->ui->partDescription2, "Part: ");
+			strcat(data->ui->partDescription2, data->arm->name);
+			strcpy(data->ui->partDescription3, "AP: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->arm->health);
+			strcat(data->ui->partDescription3, numBuffer);
+			strcpy(data->ui->partDescription4, "");
 			break;
 		case 2:
+			strcpy(data->ui->partDescription1, "Bodies");
+			strcpy(data->ui->partDescription2, "Part: ");
+			strcat(data->ui->partDescription2, data->body->name);
+			strcpy(data->ui->partDescription3, "AP: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->body->health);
+			strcat(data->ui->partDescription3, numBuffer);
+			strcpy(data->ui->partDescription4, "");
 			break;
 		case 3:
+			strcpy(data->ui->partDescription1, "Leg");
+			strcpy(data->ui->partDescription2, "Part: ");
+			strcat(data->ui->partDescription2, data->leg->name);
+			strcpy(data->ui->partDescription3, "AP: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->leg->health);
+			strcat(data->ui->partDescription3, numBuffer);
+			strcpy(data->ui->partDescription4, "");
 			break;
 		case 4:
+			strcpy(data->ui->partDescription1, "Guns");
+			strcpy(data->ui->partDescription2, "Gun: ");
+			strcat(data->ui->partDescription2, data->gun->name);
+			strcpy(data->ui->partDescription3, "Damage: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->gun->damage);
+			strcat(data->ui->partDescription3, numBuffer);
+			strcpy(data->ui->partDescription4, "Cooldown: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->gun->cooldown);
+			strcat(data->ui->partDescription4, numBuffer);
 			break;
 		case 5:
+			strcpy(data->ui->partDescription1, "Shoulders");
+			strcpy(data->ui->partDescription2, "Shoulder: ");
+			strcat(data->ui->partDescription2, data->shoulder->name);
+			strcpy(data->ui->partDescription3, "Damage: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->shoulder->damage);
+			strcat(data->ui->partDescription3, numBuffer);
+			strcpy(data->ui->partDescription4, "Cooldown: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->shoulder->cooldown);
+			strcat(data->ui->partDescription4, numBuffer);
 			break;
 	}
 }
 
 void player_ui_draw() { //use static player instance to be easily accesible in game.c
 	PlayerData* data;
+	char* buffer1[128];
+	char* buffer2[128];
 	if (!thePlayer) return;
 	data = thePlayer->data;
 	if (!data) return;
-	
-	gf2d_font_draw_line_tag(data->ui->partDescription1, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 500));
-	gf2d_font_draw_line_tag(data->ui->partDescription2, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 530));
-	gf2d_font_draw_line_tag(data->ui->partDescription3, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 560));
-	gf2d_font_draw_line_tag(data->ui->partDescription4, FT_H4, GFC_COLOR_WHITE, gfc_vector2d(10, 590));
+	//draw health
+	strcpy(buffer1, "AP: ");
+	snprintf(buffer2, sizeof(buffer2), "%d", data->currentHealth);
+	strcat(buffer1, buffer2);
+	gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10,200));
+
+	if (data->ui->enabled) { //this is currently just for the part selection UI
+		gf2d_font_draw_line_tag(data->ui->partDescription1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 500));
+		gf2d_font_draw_line_tag(data->ui->partDescription2, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 530));
+		gf2d_font_draw_line_tag(data->ui->partDescription3, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 560));
+		gf2d_font_draw_line_tag(data->ui->partDescription4, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 590));
+	}
 }
 
 void player_set_head(Head* currentHead, SJson* selectedHead) {
@@ -427,6 +528,7 @@ void player_set_body(Body* currentBody, SJson* selectedBody) {
 	}
 	strcpy(currentBody->name, sj_object_get_value_as_string(selectedBody, "name"));
 	sj_object_get_value_as_int(selectedBody, "health", &currentBody->health);
+	sj_object_get_value_as_int(selectedBody, "fuel", &currentBody->fuel);
 	meshPath = sj_object_get_value_as_string(selectedBody, "mesh");
 	texturePath = sj_object_get_value_as_string(selectedBody, "texture");
 	if (currentBody->bodyMesh) {
@@ -516,6 +618,7 @@ void player_next_body(Entity* self) {
 		data->bodyIndex = 0;
 	}
 	data->body = gfc_list_get_nth(data->bodyInventory, data->bodyIndex);
+	data->maxFuel = data->body->fuel;
 }
 
 void player_next_leg(Entity* self) {

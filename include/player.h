@@ -20,6 +20,7 @@ typedef struct {
 typedef struct {
 	const char* name[128];
 	Uint16 health;
+	Uint16 fuel;
 	Mesh* bodyMesh;
 	Texture* bodyTexture;
 }Body;
@@ -58,9 +59,9 @@ typedef struct {
 	Sint32			maxHealth;
 	Sint32			currentHealth;
 	Uint8			movementState;
-	Sint32			maxFuel;
-	Sint32			currentFuel;
-	Sint32			dashCooldown;
+	Uint16			maxFuel;
+	Uint16			currentFuel;
+	Uint16			dashCooldown;
 	PlayerUI*		ui;
 
 	Leg* leg;

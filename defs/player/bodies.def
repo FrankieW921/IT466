@@ -4,19 +4,22 @@
 			"name": "Standard",
 			"mesh": "models/player/body1.obj",
 			"texture": "models/player/mech1texture.png",
-			"health": 2500
+			"health": 2500,
+			"fuel": 900
 		},
 		{
 			"name": "Speed",
 			"mesh": "models/player/body2.obj",
 			"texture": "models/player/mech2texture.png",
-			"health": 1300
+			"health": 1300,
+			"fuel": 750
 		},
 		{
 			"name": "Bulk",
 			"mesh": "models/player/body3.obj",
 			"texture": "models/player/mech3texture.png",
-			"health": 3250
+			"health": 3250,
+			"fuel": 1080
 		}
 	]
 }
