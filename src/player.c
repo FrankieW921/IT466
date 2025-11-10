@@ -78,10 +78,10 @@ void player_think(Entity* self) {
 
 	//rotate player
 	if (gfc_input_command_down("panleft")) {
-		self->rotation.z += .1;
+		self->rotation.z += (.25 * moveStep);
 	}
 	if (gfc_input_command_down("panright")) {
-		self->rotation.z -= .1;
+		self->rotation.z -= (.25 * moveStep);
 	}
 
 	//check if player quickboosted to increase moveStep
