@@ -4,19 +4,22 @@
 			"name": "Standard",
 			"mesh": "models/player/legs1.obj",
 			"texture": "models/player/mech1texture.png",
-			"health": 1000
+			"health": 1000,
+			"speed": 0.2
 		},
 		{
 			"name": "Speed",
 			"mesh": "models/player/legs2.obj",
 			"texture": "models/player/mech2texture.png",
-			"health": 750
+			"health": 750,
+			"speed": 0.35
 		},
 		{
 			"name": "Bulk",
 			"mesh": "models/player/legs3.obj",
 			"texture": "models/player/mech3texture.png",
-			"health": 1300
+			"health": 1300,
+			"speed": 0.12
 		}
 	]
 }

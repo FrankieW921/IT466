@@ -11,6 +11,7 @@ static Entity* thePlayer;
 
 static Uint8 partSwapCooldown = 0;
 static Uint8 fuelRecharge = 0;
+static Uint8 boostCooldown = 0;
 
 Entity* get_the_player() {
 	if (!thePlayer) {
@@ -56,17 +57,23 @@ void player_think(Entity* self) {
 	GFC_Vector2D direction2d;
 	Uint8 partChanged = 0;
 	float move = 0; 
-	float moveStep = .35;
+	float moveStep = 0;
 
 	if (!self) return;
 	data = self->data;
 	if (!data) return;
 
+	moveStep = data->leg->speed;
+
 	if (partSwapCooldown > 0) {
 		partSwapCooldown -= 1;
 	}
-	if (fuelRecharge > 0) {
-		fuelRecharge -= 1;
+
+	if (boostCooldown > 0) {
+		boostCooldown -= 1;
+		if (boostCooldown > 40) {
+			moveStep *= 3; //maintain boost for 20 frames
+		}
 	}
 
 	//rotate player
@@ -75,6 +82,14 @@ void player_think(Entity* self) {
 	}
 	if (gfc_input_command_down("panright")) {
 		self->rotation.z -= .1;
+	}
+
+	//check if player quickboosted to increase moveStep
+	if (gfc_input_command_down("boost") && boostCooldown == 0 && data->currentFuel >= 70) {
+		moveStep *= 3;
+		boostCooldown = 60;
+		data->currentFuel -= 70;
+		fuelRecharge = 75;
 	}
 	//x and y movement of player
 	direction2d = gfc_vector2d_from_angle(self->rotation.z);
@@ -106,22 +121,36 @@ void player_think(Entity* self) {
 	//player jumping/flying
 	if (data->movementState == MS_FLYING) data->movementState = MS_FALLING;
 	if (gfc_input_command_down("jump")) {
-		data->movementState = MS_FLYING;
+		if (data->currentFuel > 0) {
+			data->movementState = MS_FLYING;
+			data->currentFuel -= 5;
+			if (data->currentFuel < 0) data->currentFuel = 0;
+		}
+		fuelRecharge = 75; //player MUST let go of space
 	}
 
-	//change z velocity based on MS
+	//change z velocity based on MS, fuel recharge decreases on ground and falling
 	switch (data->movementState) {
 		case MS_ON_GROUND:
 			self->velocity.z = 0;
+			if (fuelRecharge > 0) fuelRecharge-=1;
 			break;
 		case MS_FALLING:
 			self->velocity.z -= .05;
 			if (self->velocity.z < -3) self->velocity.z = -3;
+			if (fuelRecharge > 0) fuelRecharge-=1;
 			break;
 		case MS_FLYING:
 			self->velocity.z += .03;
 			if (self->velocity.z > 2) self->velocity.z = 2;
 			break;
+	}
+
+	if (fuelRecharge == 0) {
+		data->currentFuel += 10;
+		if (data->currentFuel > data->maxFuel) {
+			data->currentFuel = data->maxFuel;
+		}
 	}
 
 	if (gfc_input_command_down("nextHead") && partSwapCooldown == 0 && data->ui->enabled == 1) {
@@ -353,6 +382,7 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 		player_add_body(data, part);
 	}
 	data->body = gfc_list_get_nth(data->bodyInventory, 0);
+	data->maxFuel = data->body->fuel; //first time
 
 	defArray = sj_object_get_value(data->legs, "legs");
 	for (int i = 0; i < 3; i++) {
@@ -423,7 +453,9 @@ void player_ui_update(PlayerData* data) {
 			strcpy(data->ui->partDescription3, "AP: ");
 			snprintf(numBuffer, sizeof(numBuffer), "%d", data->body->health);
 			strcat(data->ui->partDescription3, numBuffer);
-			strcpy(data->ui->partDescription4, "");
+			strcpy(data->ui->partDescription4, "Fuel: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%d", data->body->fuel);
+			strcat(data->ui->partDescription4, numBuffer);
 			break;
 		case 3:
 			strcpy(data->ui->partDescription1, "Leg");
@@ -432,7 +464,9 @@ void player_ui_update(PlayerData* data) {
 			strcpy(data->ui->partDescription3, "AP: ");
 			snprintf(numBuffer, sizeof(numBuffer), "%d", data->leg->health);
 			strcat(data->ui->partDescription3, numBuffer);
-			strcpy(data->ui->partDescription4, "");
+			strcpy(data->ui->partDescription4, "Speed: ");
+			snprintf(numBuffer, sizeof(numBuffer), "%f", data->leg->speed);
+			strcat(data->ui->partDescription4, numBuffer);
 			break;
 		case 4:
 			strcpy(data->ui->partDescription1, "Guns");
@@ -471,6 +505,20 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 	snprintf(buffer2, sizeof(buffer2), "%d", data->currentHealth);
 	strcat(buffer1, buffer2);
 	gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10,200));
+	//draw fuel
+	strcpy(buffer1, "Fuel: ");
+	snprintf(buffer2, sizeof(buffer2), "%d", data->currentFuel);
+	strcat(buffer1, buffer2);
+	gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 230));
+	//draw quickboost indicator
+	if (boostCooldown > 0) {
+		strcpy(buffer1, "Boost: Cooldown...");
+		gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 260));
+	}
+	else {
+		strcpy(buffer1, "Boost: READY");
+		gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_DARKGREEN, gfc_vector2d(10, 260));
+	}
 
 	if (data->ui->enabled) { //this is currently just for the part selection UI
 		gf2d_font_draw_line_tag(data->ui->partDescription1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 500));
@@ -549,6 +597,7 @@ void player_set_leg(Leg* currentLeg, SJson* selectedLeg) {
 	}
 	strcpy(currentLeg->name, sj_object_get_value_as_string(selectedLeg, "name"));
 	sj_object_get_value_as_int(selectedLeg, "health", &currentLeg->health);
+	sj_object_get_value_as_float(selectedLeg, "speed", &currentLeg->speed);
 	meshPath = sj_object_get_value_as_string(selectedLeg, "mesh");
 	texturePath = sj_object_get_value_as_string(selectedLeg, "texture");
 	if (currentLeg->legMesh) {
@@ -720,6 +769,7 @@ void player_add_body(PlayerData* pData, SJson* bodyToAdd) {
 
 	strcpy(body->name, sj_object_get_value_as_string(bodyToAdd, "name"));
 	sj_object_get_value_as_int(bodyToAdd, "health", &body->health);
+	sj_object_get_value_as_int(bodyToAdd, "fuel", &body->fuel);
 	meshPath = sj_object_get_value_as_string(bodyToAdd, "mesh");
 	texturePath = sj_object_get_value_as_string(bodyToAdd, "texture");
 	body->bodyMesh = gf3d_mesh_load(meshPath);
@@ -737,6 +787,7 @@ void player_add_leg(PlayerData* pData, SJson* legToAdd) {
 
 	strcpy(leg->name, sj_object_get_value_as_string(legToAdd, "name"));
 	sj_object_get_value_as_int(legToAdd, "health", &leg->health);
+	sj_object_get_value_as_float(legToAdd, "speed", &leg->speed);
 	meshPath = sj_object_get_value_as_string(legToAdd, "mesh");
 	texturePath = sj_object_get_value_as_string(legToAdd, "texture");
 	leg->legMesh = gf3d_mesh_load(meshPath);
