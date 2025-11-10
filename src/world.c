@@ -5,6 +5,7 @@
 #include "gfc_text.h"
 #include "gf3d_obj_load.h"
 #include "world.h"
+#include "enemy.h"
 
 static World* theWorld;
 
@@ -48,6 +49,8 @@ World* world_load(const char* filename) {
 	sj_object_get_vector3d(config, "lightPosition", &world->lightPosition);
 	sj_free(json);
 
+	world->entities = gfc_list_new();
+
 	theWorld = world;
 	return world;
 }
@@ -56,6 +59,9 @@ void world_free(World* w) {
 	gf3d_mesh_free(w->mesh);
 	gf3d_texture_free(w->texture);
 	//for loop clearing the entities in the list
+	for (int i = 0; i < gfc_list_count(w->entities); i++) {
+		entity_free(gfc_list_get_nth(w->entities, i));
+	}
 	gfc_list_clear(w->entities);
 	theWorld = NULL; //null the pointer to the static version as well
 	memset(w, 0, sizeof(World));
@@ -93,4 +99,33 @@ Uint8 world_edge_test(World* world, GFC_Vector3D start, GFC_Vector3D end, GFC_Ve
 	}
 
 	return 0;
+}
+
+void world_enemy_spawn(int enemyType, GFC_Vector3D position, GFC_Color colorMod) {
+	Entity* enemy;
+	if (!theWorld) return;
+
+	if (enemyType == 1) {
+		enemy = enemy_spawn1(position, colorMod);
+	}
+	else if (enemyType == 2) {
+		enemy = enemy_spawn2(position, colorMod);
+	}
+	else if (enemyType == 3) {
+		enemy = enemy_spawn3(position, colorMod);
+	}
+	else if (enemyType == 4) {
+		enemy = enemy_spawn4(position, colorMod);
+	}
+	else if (enemyType == 5) {
+		enemy = enemy_spawn5(position, colorMod);
+	}
+	else {
+		slog("Invalid enemy type");
+		return;
+	}
+	
+	if (!enemy) return NULL;
+	gfc_list_append(theWorld->entities, enemy);
+
 }

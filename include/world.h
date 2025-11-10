@@ -29,4 +29,6 @@ void world_draw(World* w);
 //@brief tests for collisions between an entity's start and end positions from move, and the world
 Uint8 world_edge_test(World* world, GFC_Vector3D start, GFC_Vector3D end, GFC_Vector3D* contact);
 
+void world_enemy_spawn(int enemyType, GFC_Vector3D position, GFC_Color colorMod);
+
 #endif

@@ -189,7 +189,7 @@
     <ClInclude Include="..\include\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\monster.h">
+    <ClInclude Include="..\include\enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\player.h">
@@ -362,7 +362,7 @@
     <ClCompile Include="..\src\entity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\monster.c">
+    <ClCompile Include="..\src\enemy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\player.c">
