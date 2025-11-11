@@ -235,6 +235,10 @@ void player_think(Entity* self) {
 	if (partChanged == 1) {
 		player_do_max_health(self);
 	}
+
+	if (gfc_input_command_down("devHeal")) {
+		data->currentHealth = data->maxHealth;
+	}
 	
 	targetedEntity = camera_target_lock();
 	if (targetedEntity == NULL) {
@@ -296,6 +300,10 @@ void player_move(Entity* self) {
 				if (contact.z == entity_floor_check(self)) { //you touched the ground, skips a frame of movement i think but its okay
 					data->movementState = MS_ON_GROUND;
 					self->position.z = entity_floor_check(self) + .01;
+				}
+				else if (contact.z == entity_roof_check(self)) { //let go of fly and hit the cieling
+					self->position.z = entity_roof_check(self) - .1;
+					self->velocity.z = 0;
 				}
 				else { //you touched a wall while falling
 					self->position.z += self->velocity.z;
@@ -415,6 +423,10 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 		player_add_shoulder(data, part);
 	}
 	data->shoulder = gfc_list_get_nth(data->shoulderInventory, 0);
+
+	data->reticle = gf2d_sprite_load_image("images/reticle.png");
+	data->reticleLocked = gf2d_sprite_load_image("images/reticleLocked.png");
+
 	player_ui_update(data);
 }
 
@@ -529,6 +541,21 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 	else {
 		strcpy(buffer1, "Boost: READY");
 		gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_DARKGREEN, gfc_vector2d(10, 260));
+	}
+	//draw lockon indicator
+	if (lockedOn == 1) {
+		strcpy(buffer1, "TARGET LOCK: ");
+		if (targetedEntity != NULL) {
+			snprintf(buffer2, sizeof(buffer2), "%s", targetedEntity->name);
+			strcat(buffer1, buffer2);
+		}
+		gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 290));
+		gf2d_sprite_draw_image(data->reticleLocked, gfc_vector2d(667, 368));
+	}
+	else {
+		strcpy(buffer1, "Scanning...");
+		gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_DARKGREEN, gfc_vector2d(10, 290));
+		gf2d_sprite_draw_image(data->reticle, gfc_vector2d(667, 368));
 	}
 
 	if (data->ui->enabled) { //this is currently just for the part selection UI

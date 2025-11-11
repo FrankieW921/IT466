@@ -81,10 +81,10 @@ int main(int argc,char *argv[])
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     player_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
     world_enemy_spawn(1, gfc_vector3d(20, 20, 40), GFC_COLOR_WHITE);
-    world_enemy_spawn(2, gfc_vector3d(20, 20, 0), GFC_COLOR_WHITE);
-    world_enemy_spawn(3, gfc_vector3d(-20, 20, 40), GFC_COLOR_WHITE);
+    world_enemy_spawn(2, gfc_vector3d(60, 20, 0), GFC_COLOR_WHITE);
+    world_enemy_spawn(3, gfc_vector3d(-20, 20, 60), GFC_COLOR_WHITE);
     world_enemy_spawn(4, gfc_vector3d(-20, 20, 0), GFC_COLOR_WHITE);
-    world_enemy_spawn(5, gfc_vector3d(-40, 20, 0), GFC_COLOR_WHITE);
+    world_enemy_spawn(5, gfc_vector3d(-60, 20, 0), GFC_COLOR_WHITE);
     ce = camera_entity_new();
 
     skybox = gf3d_mesh_load("models/sky/sky.obj");

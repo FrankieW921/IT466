@@ -9,4 +9,10 @@ Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color colorMod);
 Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color colorMod);
 Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color colorMod);
 
+void enemy_think1(Entity* self);
+void enemy_think2(Entity* self);
+void enemy_think3(Entity* self);
+void enemy_think4(Entity* self);
+void enemy_think5(Entity* self);
+
 #endif

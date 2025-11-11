@@ -14,11 +14,15 @@ Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color color) {
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
-	//void (*think)(Entity_S);
+	self->think = enemy_think1;
 	//void (*update)(Entity_S);
 
 	return self;
 }
+void enemy_think1(Entity* self) {
+
+}
+
 Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
 	Entity* self;
 	self = entity_new();
@@ -31,11 +35,15 @@ Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
-	//void (*think)(Entity_S);
+	self->think = enemy_think2;
 	//void (*update)(Entity_S);
 
 	return self;
 }
+void enemy_think2(Entity* self) {
+
+}
+
 Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
 	Entity* self;
 	self = entity_new();
@@ -48,11 +56,15 @@ Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
-	//void (*think)(Entity_S);
+	self->think = enemy_think3;
 	//void (*update)(Entity_S);
 
 	return self;
 }
+void enemy_think3(Entity* self) {
+
+}
+
 Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	Entity* self;
 	self = entity_new();
@@ -65,11 +77,15 @@ Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
-	//void (*think)(Entity_S);
+	self->think = enemy_think4;
 	//void (*update)(Entity_S);
 
 	return self;
 }
+void enemy_think4(Entity* self) {
+
+}
+
 Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 	Entity* self;
 	self = entity_new();
@@ -82,8 +98,11 @@ Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
-	//void (*think)(Entity_S);
+	self->think = enemy_think5;
 	//void (*update)(Entity_S);
 
 	return self;
+}
+void enemy_think5(Entity* self) {
+
 }

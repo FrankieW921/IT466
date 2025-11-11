@@ -1,6 +1,8 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+#include "gf2d_sprite.h"
+
 #include "entity.h"
 
 typedef struct {
@@ -64,6 +66,9 @@ typedef struct {
 	Sint16			currentFuel;
 	Uint16			dashCooldown;
 	PlayerUI*		ui;
+
+	Sprite* reticle;
+	Sprite* reticleLocked;
 
 	Leg* leg;
 	Body* body;

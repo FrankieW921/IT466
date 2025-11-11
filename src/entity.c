@@ -75,10 +75,6 @@ void entity_move(Entity* self) {
 	else {
 		gfc_vector3d_copy(self->position, positionPost);
 	}
-
-	gfc_vector2d_scale(self->velocity, self->velocity, .90);
-	if (self->velocity.x < .05 && self->velocity.x > -.05)self->velocity.x = 0;
-	if (self->velocity.y < .05 && self->velocity.y > -.05)self->velocity.y = 0;
 	
 	gfc_box_cpy(bounds, self->bounds); //start of collision checking
 	gfc_vector3d_add(bounds, bounds, self->velocity);

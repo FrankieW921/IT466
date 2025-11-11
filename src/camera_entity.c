@@ -72,7 +72,7 @@ Entity* camera_target_lock() {
 		entityVector = gfc_vector3d(ce->position.x - targetEnt->position.x, ce->position.y - targetEnt->position.y, ce->position.z - targetEnt->position.z);
 		gfc_vector3d_normalize(&entityVector);
 		dp = gfc_vector3d_dot_product(viewVector, entityVector);
-		if (dp >= .98) {
+		if (dp >= .995) {
 			returnEnt = targetEnt;
 		}
 	}
@@ -81,7 +81,6 @@ Entity* camera_target_lock() {
 		return NULL;
 	}
 	else {
-		slog("Target Locked: %s", returnEnt->name);
 		return returnEnt;
 	}
 }
