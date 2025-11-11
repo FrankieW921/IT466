@@ -13,6 +13,9 @@ static Uint8 partSwapCooldown = 0;
 static Uint8 fuelRecharge = 0;
 static Uint8 boostCooldown = 0;
 
+static Uint8 lockedOn = 0;
+static Entity* targetedEntity = NULL;
+
 Entity* get_the_player() {
 	if (!thePlayer) {
 		slog("No static player to return");
@@ -232,7 +235,15 @@ void player_think(Entity* self) {
 	if (partChanged == 1) {
 		player_do_max_health(self);
 	}
-
+	
+	targetedEntity = camera_target_lock();
+	if (targetedEntity == NULL) {
+		lockedOn = 0;
+	}
+	else {
+		lockedOn = 1;
+	}
+	
 	mouseState = SDL_GetMouseState(&mx, &my);
 }
 

@@ -16,4 +16,8 @@ CameraEntity* camera_entity_new();
 
 void camera_think();
 
+GFC_Vector3D get_view_vector();
+
+Entity* camera_target_lock();
+
 #endif

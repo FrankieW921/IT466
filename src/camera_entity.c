@@ -2,6 +2,7 @@
 #include "gfc_input.h"
 
 #include "camera_entity.h"
+#include "world.h"
 #include "player.h"
 
 static CameraEntity* ce;
@@ -55,5 +56,33 @@ GFC_Vector3D get_view_vector() {
 	GFC_Vector3D vec = gfc_vector3d(ce->position.x - ce->target.x, ce->position.y - ce->target.y, ce->position.z - ce->target.z);
 	gfc_vector3d_normalize(&vec);
 	return vec;
+}
+
+Entity* camera_target_lock() {
+	GFC_Vector3D entityVector;
+	Entity* targetEnt;
+	Entity* returnEnt = NULL;
+	float dp = 0;
+	GFC_Vector3D viewVector = get_view_vector();
+	World* w = get_the_world();
+	if (!w || !ce) return NULL;
+	
+	for (int i = 0; i < gfc_list_count(w->entities); i++) {
+		targetEnt = gfc_list_get_nth(w->entities, i);
+		entityVector = gfc_vector3d(ce->position.x - targetEnt->position.x, ce->position.y - targetEnt->position.y, ce->position.z - targetEnt->position.z);
+		gfc_vector3d_normalize(&entityVector);
+		dp = gfc_vector3d_dot_product(viewVector, entityVector);
+		if (dp >= .98) {
+			returnEnt = targetEnt;
+		}
+	}
+
+	if (returnEnt == NULL) {
+		return NULL;
+	}
+	else {
+		slog("Target Locked: %s", returnEnt->name);
+		return returnEnt;
+	}
 }
 
