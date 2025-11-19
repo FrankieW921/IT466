@@ -287,12 +287,12 @@ void player_move(Entity* self) {
 			}
 			else if (positionPre.z - entity_floor_check(self) > .02) { //walked off a ledge
 				data->movementState = MS_FALLING;
+				self->position.z = positionPre.z;
 				self->position.x = positionPost.x;
 				self->position.y = positionPost.y;
 			}
 			else { //not touching wall
 				gfc_vector3d_copy(self->position, positionPost);
-				//self->position.z = entity_floor_check(self) + .01;
 			}
 			break;
 		case MS_FALLING:

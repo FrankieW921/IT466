@@ -56,3 +56,6 @@ gf3d
 *.blend1
 
 .vs/
+
+#music folder
+music/

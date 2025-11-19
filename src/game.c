@@ -1,4 +1,5 @@
 #include <SDL.h>            
+#include <SDL_mixer.h>
 
 #include "simple_json.h"
 #include "simple_logger.h"
@@ -36,6 +37,7 @@ static float fps = 0;
 
 void parse_arguments(int argc,char *argv[]);
 void game_frame_delay();
+void main_menu();
 
 void exitGame()
 {
@@ -67,6 +69,9 @@ int main(int argc,char *argv[])
     gfc_input_init("config/input.cfg");
     gfc_config_def_init();
     gfc_action_init(1024);
+    //audio
+    gfc_audio_init(32, true, false);
+    Mix_VolumeMusic(24);
     //gf3d init
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
@@ -92,6 +97,8 @@ int main(int argc,char *argv[])
     gfc_matrix4_identity(skyboxID);
 
     gfc_matrix4_identity(testworldID);
+
+    main_menu();
     // main game loop    
     while(!_done)
     {
@@ -113,7 +120,7 @@ int main(int argc,char *argv[])
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 player_ui_draw();
                 gf2d_font_draw_line_tag("ALT+F4 to commit mecha epicness",FT_H4,GFC_COLOR_WHITE, gfc_vector2d(10,10));
-                gf2d_mouse_draw();
+                //gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();
@@ -155,4 +162,19 @@ void game_frame_delay()
     fps = 1000.0/MAX(SDL_GetTicks() - then,0.001);
 //     slog("fps: %f",fps);
 }
+
+void main_menu() {
+    Mix_Music* puzzle_boy;
+
+    Mix_HaltMusic();
+    puzzle_boy = Mix_LoadMUS("music/Battle-a2.mp3");
+    if (puzzle_boy) {
+        slog("TRYING TO PLAY MOOSIC");
+        Mix_PlayMusic(puzzle_boy, -1);
+    }
+    else {
+        slog("COULDNT PLAY THE GOOD STUFF");
+    }
+}
+
 /*eol@eof*/
