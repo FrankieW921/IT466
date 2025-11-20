@@ -6,9 +6,17 @@
 
 #include "gf3d_mesh.h"
 
+typedef enum {
+	ET_Player,
+	ET_Player_Projectile,
+	ET_Enemy,
+	ET_Enemy_Projectile
+}EntityType;
+
 typedef struct Entity_S {
 	Uint8 _inuse;
 	GFC_TextLine name;
+	EntityType type;
 	Mesh* mesh;
 	Texture* texture;
 	GFC_Color color;

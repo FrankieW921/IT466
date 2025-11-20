@@ -1,0 +1,23 @@
+{
+	"projectiles":
+	[
+		{
+			"name": "Scudder Bullet",
+			"damage": "200",
+			"speed": 5,
+			"timeToLive": 120
+		},
+		{
+			"name": "DAC Bullet",
+			"damage": "400",
+			"speed": 8,
+			"timeToLive": 90
+		},
+		{
+			"name": "Kurasawa Laser",
+			"damage": "150",
+			"speed": 4,
+			"timeToLive": 180
+		}
+	]
+}

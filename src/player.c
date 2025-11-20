@@ -38,6 +38,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	self->color = color;
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
+	self->bounds = gfc_box(position.x-1.75, position.y-1.75, position.z, 3.5, 3.5, 11.5);
 	//entity defaults to scale of 1, 1, 1
 	self->think = player_think;
 	self->update = player_update;
@@ -255,13 +256,13 @@ void player_update(Entity* self) {
 	PlayerData* data;
 
 	if (!self) return;
-	//data = self->data;
-	//if (!data) return;
+	data = self->data;
+	if (!data) return;
 
 	player_move(self); 
 
-	self->bounds.x = self->position.x;
-	self->bounds.y = self->position.y;
+	self->bounds.x = self->position.x - 2.25;
+	self->bounds.y = self->position.y - 1.75;
 	self->bounds.z = self->position.z;
 }
 

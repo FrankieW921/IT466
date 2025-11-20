@@ -12,6 +12,7 @@ Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color color) {
 	self->texture = gf3d_texture_load("models/enemy1/enemy1.png");
 	self->color = color;
 	self->position = position;
+	self->bounds = gfc_box(position.x - 1.5, position.y - 1.5, position.z - 1.5, 3, 3, 3);
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think1;
@@ -33,6 +34,7 @@ Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
 	self->texture = gf3d_texture_load("models/enemy2/enemy2.png");
 	self->color = color;
 	self->position = position;
+	self->bounds = gfc_box(position.x - 1.5, position.y - 1.5, position.z, 3, 3, 2);
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think2;
@@ -54,6 +56,7 @@ Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
 	self->texture = gf3d_texture_load("models/enemy3/enemy3.png");
 	self->color = color;
 	self->position = position;
+	self->bounds = gfc_box(position.x - 1, position.y - 1, position.z - 1, 2, 2, 2);
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think3;
@@ -75,6 +78,7 @@ Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	self->texture = gf3d_texture_load("models/enemy4/enemy4.png");
 	self->color = color;
 	self->position = position;
+	self->bounds = gfc_box(position.x - 2, position.y - 2, position.z, 4, 4, 8.5);
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think4;
@@ -96,6 +100,7 @@ Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 	self->texture = gf3d_texture_load("models/enemy5/enemy5.png");
 	self->color = color;
 	self->position = position;
+	self->bounds = gfc_box(position.x - 1, position.y - 1, position.z, 2, 2, 1.5);
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think5;

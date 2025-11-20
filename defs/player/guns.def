@@ -9,8 +9,8 @@
     },
     {
       "name": "Dual-Auto-Cannon",
-      "damage": 50,
-      "cooldown": 75,
+      "damage": 400,
+      "cooldown": 50,
       "mesh": "models/weapons/weapon2.obj",
       "texture": "models/weapons/weapon2.png"
     },

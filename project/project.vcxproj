@@ -198,6 +198,7 @@
     <ClInclude Include="..\include\gf3d_vqueues.h" />
     <ClInclude Include="..\include\enemy.h" />
     <ClInclude Include="..\include\player.h" />
+    <ClInclude Include="..\include\projectile.h" />
     <ClInclude Include="..\include\world.h" />
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +258,7 @@
     <ClCompile Include="..\src\gf3d_vqueues.c" />
     <ClCompile Include="..\src\enemy.c" />
     <ClCompile Include="..\src\player.c" />
+    <ClCompile Include="..\src\projectile.c" />
     <ClCompile Include="..\src\world.c" />
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +275,7 @@
     <None Include="..\defs\player\legs.def" />
     <None Include="..\defs\player\shoulders.def" />
     <None Include="..\defs\player\guns.def" />
+    <None Include="..\defs\projectiles.def" />
     <None Include="..\defs\terrain\terrain1.def" />
     <None Include="..\shaders\model.frag" />
     <None Include="..\shaders\model.vert" />

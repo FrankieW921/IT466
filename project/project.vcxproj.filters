@@ -201,6 +201,9 @@
     <ClInclude Include="..\include\camera_entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\game.c">
@@ -374,6 +377,9 @@
     <ClCompile Include="..\src\camera_entity.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\projectile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\config\audio.cfg">
@@ -440,6 +446,9 @@
       <Filter>Resource Files\defs</Filter>
     </None>
     <None Include="..\defs\player\guns.def">
+      <Filter>Resource Files\defs</Filter>
+    </None>
+    <None Include="..\defs\projectiles.def">
       <Filter>Resource Files\defs</Filter>
     </None>
   </ItemGroup>
