@@ -26,8 +26,9 @@ Entity* projectile_spawn(Uint8 projectileType, GFC_Vector3D position, GFC_Vector
 
 	self->think = projectile_think;
 	self->update = projectile_update;
-	gfc_vector2d_copy(self->position, position);
-	gfc_vector2d_copy(self->velocity, velocity);
+	gfc_vector3d_copy(self->position, position);
+	gfc_vector3d_copy(self->velocity, velocity);
+	self->bounds = gfc_box(self->position.x - 1, self->position.y - 1, self->position.z - 1, 2, 2, 2);
 
 	projectileObject = sj_array_get_nth(projectilesDefs, projectileType);
 	data = gfc_allocate_array(sizeof(ProjectileData), 1);
@@ -38,8 +39,8 @@ Entity* projectile_spawn(Uint8 projectileType, GFC_Vector3D position, GFC_Vector
 		sj_object_get_int(projectileObject, "timeToLive", &data->timeToLive);
 	}
 	self->data = data;
-	//self->mesh = gf3d_mesh_load("models/"); do this along with scaling?
-
+	self->mesh = gf3d_mesh_load("models/projectile/projectile.obj");
+	self->texture = gf3d_texture_load("models/projectile/projectile.png");
 }
 
 void projectile_think(Entity* self) {
@@ -54,6 +55,22 @@ void projectile_update(Entity* self) {
 	if (!data) {
 		return;
 	}
-	//keep looking at 2d project
 
+	self->position.x += self->velocity.x * data->speed;
+	self->position.y += self->velocity.y * data->speed;
+	self->position.z += self->velocity.z * data->speed;
+	self->bounds.x = self->position.x - 1;
+	self->bounds.y = self->position.y - 1;
+	self->bounds.z = self->position.z - 1;
+
+	if (data->timeToLive <= 0) projectile_free(self);
+}
+
+void projectile_free(Entity* self) {
+	ProjectileData* data;
+	if (!self) return;
+	data = self->data;
+
+	memset(data, 0, sizeof(ProjectileData)); //all ints, okay
+	entity_free(self);
 }

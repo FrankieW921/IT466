@@ -65,6 +65,7 @@ typedef struct {
 	Uint16			maxFuel;
 	Sint16			currentFuel;
 	Uint16			dashCooldown;
+	Uint16			fireCooldoown;
 	PlayerUI*		ui;
 
 	Sprite* reticle;

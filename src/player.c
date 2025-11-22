@@ -6,6 +6,7 @@
 #include "player.h"
 #include "world.h"
 #include "camera_entity.h"
+#include "projectile.h"
 
 static Entity* thePlayer;
 
@@ -62,6 +63,7 @@ void player_think(Entity* self) {
 	Uint8 partChanged = 0;
 	float move = 0; 
 	float moveStep = 0;
+	GFC_Vector3D shootPosition, shootVelocity;
 
 	if (!self) return;
 	data = self->data;
@@ -78,6 +80,10 @@ void player_think(Entity* self) {
 		if (boostCooldown > 40) {
 			moveStep *= 3; //maintain boost for 20 frames
 		}
+	}
+
+	if (data->fireCooldoown > 0) {
+		data->fireCooldoown -= 1;
 	}
 
 	//rotate player
@@ -247,6 +253,28 @@ void player_think(Entity* self) {
 	}
 	else {
 		lockedOn = 1;
+	}
+
+	if (gfc_input_command_down("shoot") && data->fireCooldoown == 0) {
+		gfc_vector3d_copy(shootPosition,self->position);
+		shootPosition.z += 6;
+
+		if (lockedOn) { //reticle has caught an enemy in this think iteration, maffs
+			if (strcmp(targetedEntity->name, "Muscle Tracer") == 0) {
+				shootVelocity = gfc_vector3d(targetedEntity->position.x - shootPosition.x, targetedEntity->position.y - shootPosition.y, targetedEntity->position.z - shootPosition.z + 6);
+			}
+			else {
+				shootVelocity = gfc_vector3d(targetedEntity->position.x - shootPosition.x, targetedEntity->position.y - shootPosition.y, targetedEntity->position.z - shootPosition.z);
+			}
+			
+			gfc_vector3d_normalize(&shootVelocity);
+			projectile_spawn(data->gunIndex, shootPosition, shootVelocity);
+		}
+		else { //freefire, only viable implementation with my camera since the target cam position x and y are always the same as the player's
+			gfc_vector3d_negate(shootVelocity, get_view_vector());
+			projectile_spawn(data->gunIndex, shootPosition, shootVelocity);
+		}
+		data->fireCooldoown = data->gun->cooldown;
 	}
 	
 	mouseState = SDL_GetMouseState(&mx, &my);

@@ -70,7 +70,7 @@ int main(int argc,char *argv[])
     gfc_config_def_init();
     gfc_action_init(1024);
     //audio
-    gfc_audio_init(32, true, false);
+    gfc_sound_init_config("config/audio.cfg");
     Mix_VolumeMusic(24);
     //gf3d init
     gf3d_vgraphics_init("config/setup.cfg");
@@ -167,7 +167,7 @@ void main_menu() {
     Mix_Music* puzzle_boy;
 
     Mix_HaltMusic();
-    puzzle_boy = Mix_LoadMUS("music/Battle-a2.mp3");
+    puzzle_boy = Mix_LoadMUS("music/Puzzle_Boy.mp3");
     if (puzzle_boy) {
         slog("TRYING TO PLAY MOOSIC");
         Mix_PlayMusic(puzzle_boy, -1);

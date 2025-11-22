@@ -1,6 +1,6 @@
 {
-	"projectiles":
-	[
+	"comment1": "projectiles 0-n matches up with arms 0-n",
+	"projectiles": [
 		{
 			"name": "Scudder Bullet",
 			"damage": "200",

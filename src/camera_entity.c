@@ -85,3 +85,7 @@ Entity* camera_target_lock() {
 	}
 }
 
+GFC_Vector3D camera_get_target() {
+	return ce->target;
+}
+

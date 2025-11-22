@@ -20,4 +20,6 @@ GFC_Vector3D get_view_vector();
 
 Entity* camera_target_lock();
 
+GFC_Vector3D camera_get_target();
+
 #endif
