@@ -15,4 +15,6 @@ void enemy_think3(Entity* self);
 void enemy_think4(Entity* self);
 void enemy_think5(Entity* self);
 
+void enemy_config(Entity* self, int enemyIndex);
+
 #endif

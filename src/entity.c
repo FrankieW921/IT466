@@ -62,10 +62,6 @@ void entity_system_close() {
 void entity_move(Entity* self) {
 	GFC_Box bounds;
 	GFC_Vector3D positionPre, positionPost, contact;
-	GFC_Vector2D direction2d;
-
-	direction2d = gfc_vector2d_from_angle(self->rotation.z);
-	gfc_vector2d_normalize(&direction2d);
 
 	gfc_vector3d_copy(positionPre, self->position);
 	gfc_vector3d_add(positionPost, self->position, self->velocity);

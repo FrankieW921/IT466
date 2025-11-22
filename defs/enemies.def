@@ -1,0 +1,38 @@
+{
+	"enemies":[
+		{
+			"filler": "entry to line up enemy types with non-0 index because I'd like to have it that way tbh"
+		},
+		{
+			"name": "Heli",
+			"mesh": "models/enemy1/enemy1.obj",
+			"texture": "models/enemy1/enemy1.png",
+			"heath": 350
+		},
+		{
+			"name": "Tank",
+			"mesh": "models/enemy2/enemy2.obj",
+			"texture": "models/enemy2/enemy2.png",
+			"heath": 800
+		},
+		{
+			"name": "Drone",
+			"mesh": "models/enemy3/enemy3.obj",
+			"texture": "models/enemy3/enemy3.png",
+			"heath": 350
+		},
+		{
+			"name": "Muscle Tracer",
+			"mesh": "models/enemy4/enemy4.obj",
+			"texture": "models/enemy4/enemy4.png",
+			"heath": 2200
+		},
+		{
+			"name": "Turret",
+			"mesh": "models/enemy5/enemy5.obj",
+			"texture": "models/enemy5/enemy5.png",
+			"heath": 1000
+		}
+	]
+
+}

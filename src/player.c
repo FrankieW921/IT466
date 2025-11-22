@@ -263,6 +263,9 @@ void player_think(Entity* self) {
 			if (strcmp(targetedEntity->name, "Muscle Tracer") == 0) {
 				shootVelocity = gfc_vector3d(targetedEntity->position.x - shootPosition.x, targetedEntity->position.y - shootPosition.y, targetedEntity->position.z - shootPosition.z + 6);
 			}
+			else if (strcmp(targetedEntity->name, "Tank") == 0 || strcmp(targetedEntity->name, "Turret") == 0) {
+				shootVelocity = gfc_vector3d(targetedEntity->position.x - shootPosition.x, targetedEntity->position.y - shootPosition.y, targetedEntity->position.z - shootPosition.z + 2);
+			}
 			else {
 				shootVelocity = gfc_vector3d(targetedEntity->position.x - shootPosition.x, targetedEntity->position.y - shootPosition.y, targetedEntity->position.z - shootPosition.z);
 			}

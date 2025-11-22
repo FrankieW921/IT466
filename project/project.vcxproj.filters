@@ -451,5 +451,8 @@
     <None Include="..\defs\projectiles.def">
       <Filter>Resource Files\defs</Filter>
     </None>
+    <None Include="..\defs\enemies.def">
+      <Filter>Resource Files\defs</Filter>
+    </None>
   </ItemGroup>
 </Project>

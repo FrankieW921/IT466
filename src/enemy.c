@@ -2,6 +2,9 @@
 
 #include "enemy.h"
 
+static SJson* enemyDefFile = NULL;
+static SJson* enemyDefs = NULL;
+
 Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color color) {
 	Entity* self;
 	self = entity_new();
@@ -110,4 +113,21 @@ Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 }
 void enemy_think5(Entity* self) {
 
+}
+
+void enemy_config(Entity* self, int enemyIndex) {
+	SJson* enemyDef;
+
+	if (!self) {
+		return;
+	}
+	if (!enemyDefFile) {
+		enemyDefFile = sj_load("defs/enemies.def");
+		if (!enemyDefs) {
+			enemyDefs = sj_object_get_value(enemyDefFile, "enemies");
+		}
+	}
+
+	enemyDef = sj_array_get_nth(enemyDefs, enemyIndex);
+	//continue implementing, adjust spawn functions
 }

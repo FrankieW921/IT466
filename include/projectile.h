@@ -16,6 +16,8 @@ void projectile_think(Entity* self);
 
 void projectile_update(Entity* self);
 
+void projectile_move(Entity* self);
+
 void projectile_free(Entity* self);
 
 #endif 

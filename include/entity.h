@@ -17,6 +17,7 @@ typedef struct Entity_S {
 	Uint8 _inuse;
 	GFC_TextLine name;
 	EntityType type;
+	Sint32 health;
 	Mesh* mesh;
 	Texture* texture;
 	GFC_Color color;

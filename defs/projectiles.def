@@ -3,21 +3,24 @@
 	"projectiles": [
 		{
 			"name": "Scudder Bullet",
-			"damage": "200",
+			"damage": 200,
 			"speed": 5,
-			"timeToLive": 120
+			"timeToLive": 120,
+			"color": [220, 220, 100]
 		},
 		{
 			"name": "DAC Bullet",
-			"damage": "400",
+			"damage": 400,
 			"speed": 8,
-			"timeToLive": 90
+			"timeToLive": 90,
+			"color": [ 255, 100, 100 ]
 		},
 		{
 			"name": "Kurasawa Laser",
-			"damage": "150",
+			"damage": 150,
 			"speed": 4,
-			"timeToLive": 180
+			"timeToLive": 180,
+			"color": [100, 255, 255]
 		}
 	]
 }
