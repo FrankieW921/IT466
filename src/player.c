@@ -44,6 +44,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	self->think = player_think;
 	self->update = player_update;
 	self->draw = player_draw;
+	self->type = ET_Player;
 
 	player_data_new(data);
 	self->data = data;
@@ -281,6 +282,8 @@ void player_think(Entity* self) {
 	}
 	
 	mouseState = SDL_GetMouseState(&mx, &my);
+
+	self->collideEntities = entity_collide_all(self);
 }
 
 void player_update(Entity* self) {
@@ -291,10 +294,14 @@ void player_update(Entity* self) {
 	if (!data) return;
 
 	player_move(self); 
-
 	self->bounds.x = self->position.x - 2.25;
 	self->bounds.y = self->position.y - 1.75;
 	self->bounds.z = self->position.z;
+
+	if (self->collideEntities) {
+		slog("COLLIDING");
+	}
+	gfc_list_clear(self->collideEntities);
 }
 
 void player_move(Entity* self) {

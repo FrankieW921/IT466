@@ -131,6 +131,42 @@ void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod) {
 	}
 }
 
+Uint8 entity_collision_check(Entity* self, Entity* other) {
+	if (!self || !other) {
+		slog("no self or other");
+		return 0;
+	}
+	if (self->type == other->type) { //don't collide if the same type of thing
+		slog("entities of same type");
+		return 0;
+	}
+	if ((self->type == ET_None) || (other->type == ET_None)) { //don't collide if you dont have a type
+		slog("Entity type none");
+		return 0;
+	}
+	return gfc_box_overlap(self->bounds, other->bounds);
+}
+
+GFC_List* entity_collide_all(Entity* self) {
+	int i;
+	GFC_List* entities;
+	if (!self) return;
+
+	entities = gfc_list_new();
+	for (i = 0; i < entity_system.entity_max; ++i) {
+		if (!entity_system.entity_list[i]._inuse)continue;
+		if (self == &entity_system.entity_list[i])continue;
+		if (entity_collision_check(self, &entity_system.entity_list[i])) {
+			gfc_list_append(entities, &entity_system.entity_list[i]);
+		}
+	}
+	if (!gfc_list_count(entities)) {
+		//slog("NO COLLISIONS DETECTED");
+		gfc_list_clear(entities); return NULL;
+	}
+	return entities;
+}
+
 void entity_think(Entity* self)
 {
 	if (!self)return;

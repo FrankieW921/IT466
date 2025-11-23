@@ -10,9 +10,8 @@ Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color color) {
 	self = entity_new();
 	if (!self)return;
 
-	gfc_line_cpy(self->name, "Heli");
-	self->mesh = gf3d_mesh_load("models/enemy1/enemy1.obj");
-	self->texture = gf3d_texture_load("models/enemy1/enemy1.png");
+	enemy_config(self, 1);
+	self->type = ET_Enemy;
 	self->color = color;
 	self->position = position;
 	self->bounds = gfc_box(position.x - 1.5, position.y - 1.5, position.z - 1.5, 3, 3, 3);
@@ -32,9 +31,7 @@ Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
 	self = entity_new();
 	if (!self)return;
 
-	gfc_line_cpy(self->name, "Tank");
-	self->mesh = gf3d_mesh_load("models/enemy2/enemy2.obj");
-	self->texture = gf3d_texture_load("models/enemy2/enemy2.png");
+	enemy_config(self, 2);
 	self->color = color;
 	self->position = position;
 	self->bounds = gfc_box(position.x - 1.5, position.y - 1.5, position.z, 3, 3, 2);
@@ -54,9 +51,7 @@ Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
 	self = entity_new();
 	if (!self)return;
 
-	gfc_line_cpy(self->name, "Drone");
-	self->mesh = gf3d_mesh_load("models/enemy3/enemy3.obj");
-	self->texture = gf3d_texture_load("models/enemy3/enemy3.png");
+	enemy_config(self, 3);
 	self->color = color;
 	self->position = position;
 	self->bounds = gfc_box(position.x - 1, position.y - 1, position.z - 1, 2, 2, 2);
@@ -76,9 +71,7 @@ Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	self = entity_new();
 	if (!self)return;
 
-	gfc_line_cpy(self->name, "Muscle Tracer");
-	self->mesh = gf3d_mesh_load("models/enemy4/enemy4.obj");
-	self->texture = gf3d_texture_load("models/enemy4/enemy4.png");
+	enemy_config(self, 4);
 	self->color = color;
 	self->position = position;
 	self->bounds = gfc_box(position.x - 2, position.y - 2, position.z, 4, 4, 8.5);
@@ -98,9 +91,7 @@ Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 	self = entity_new();
 	if (!self)return;
 
-	gfc_line_cpy(self->name, "Turret");
-	self->mesh = gf3d_mesh_load("models/enemy5/enemy5.obj");
-	self->texture = gf3d_texture_load("models/enemy5/enemy5.png");
+	enemy_config(self, 5);
 	self->color = color;
 	self->position = position;
 	self->bounds = gfc_box(position.x - 1, position.y - 1, position.z, 2, 2, 1.5);
@@ -118,6 +109,9 @@ void enemy_think5(Entity* self) {
 void enemy_config(Entity* self, int enemyIndex) {
 	SJson* enemyDef;
 
+	if (enemyIndex == 0) {
+		slog("INVALID ENEMY TYPE 0, THATS THE FILLER ENTRY");
+	}
 	if (!self) {
 		return;
 	}
@@ -130,4 +124,12 @@ void enemy_config(Entity* self, int enemyIndex) {
 
 	enemyDef = sj_array_get_nth(enemyDefs, enemyIndex);
 	//continue implementing, adjust spawn functions
+	strcpy(self->name, sj_object_get_value_as_string(enemyDef, "name"));
+	self->mesh = gf3d_mesh_load(sj_object_get_value_as_string(enemyDef, "mesh"));
+	self->texture = gf3d_texture_load(sj_object_get_value_as_string(enemyDef, "texture"));
+	sj_object_get_value_as_int(enemyDef, "health", &self->health);
+	if (!self->mesh || !self->texture) {
+		slog("Failed to load %s enemy mesh or texture", self->name);
+	}
+	self->type = ET_Enemy; //all enemies need, not unique like other traits
 }

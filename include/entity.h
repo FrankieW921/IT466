@@ -7,6 +7,7 @@
 #include "gf3d_mesh.h"
 
 typedef enum {
+	ET_None,
 	ET_Player,
 	ET_Player_Projectile,
 	ET_Enemy,
@@ -28,6 +29,7 @@ typedef struct Entity_S {
 	GFC_Box bounds;
 	GFC_Vector3D velocity;
 	Uint8 drawShadow;
+	GFC_List* collideEntities;
 	void (*draw)(struct Entity_S* self, GFC_Vector3D lightPos, GFC_Color colorMod);
 	void (*think)(struct Entity_S* self);
 	void (*update)(struct Entity_S* self);
@@ -62,6 +64,9 @@ float entity_roof_check(Entity* self);
 //@param lightPos where to put the light
 //@param colorMod color of the light
 void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod);
+
+Uint8 entity_collision_check(Entity* self, Entity* other);
+GFC_List* entity_collide_all(Entity* self);
 //@brief universal entity think function, calls entities personal think if avaiable
 void entity_think(Entity* self);
 //@brief thinks every entity
