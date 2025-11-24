@@ -1,6 +1,7 @@
 #include "simple_logger.h"
 
 #include "enemy.h"
+#include "player.h"
 
 static SJson* enemyDefFile = NULL;
 static SJson* enemyDefs = NULL;
@@ -18,12 +19,37 @@ Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color color) {
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think1;
-	//void (*update)(Entity_S);
+	self->update = enemy_update1;
 
 	return self;
 }
-void enemy_think1(Entity* self) {
 
+void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D playerVector) {
+	if (!self) return;
+	if (!eData) return;
+
+	if (eData->fireCooldown > 0) {
+		eData->fireCooldown -= 1;
+	}
+	if (gfc_vector3d_distance_between_less_than(self->position, player->position, eData->seeingRange)) {
+			self->rotation.z = gfc_vector2d_angle(gfc_vector3dxy(playerVector));
+	}
+}
+
+void enemy_think1(Entity* self) {
+	Entity* player;
+	EnemyData *eData;
+	GFC_Vector3D playerVector;
+
+	player = get_the_player();
+	if (!player) return;
+	eData = self->data;
+	if (!self || !eData) return;
+
+	playerVector = gfc_vector3d(self->position.x - player->position.x, self->position.y - player->position.y, self->position.z - player->position.z);
+	gfc_vector3d_normalize(&playerVector);
+	
+	enemy_thinkg(self, eData, player, playerVector);
 }
 
 Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
@@ -38,7 +64,7 @@ Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think2;
-	//void (*update)(Entity_S);
+	self->update = enemy_update2;
 
 	return self;
 }
@@ -58,7 +84,7 @@ Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think3;
-	//void (*update)(Entity_S);
+	self->update = enemy_update3;
 
 	return self;
 }
@@ -78,7 +104,7 @@ Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think4;
-	//void (*update)(Entity_S);
+	self->update = enemy_update4;
 
 	return self;
 }
@@ -98,7 +124,7 @@ Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think5;
-	//void (*update)(Entity_S);
+	self->update = enemy_update5;
 
 	return self;
 }
@@ -108,6 +134,7 @@ void enemy_think5(Entity* self) {
 
 void enemy_config(Entity* self, int enemyIndex) {
 	SJson* enemyDef;
+	EnemyData* eData;
 
 	if (enemyIndex == 0) {
 		slog("INVALID ENEMY TYPE 0, THATS THE FILLER ENTRY");
@@ -121,6 +148,7 @@ void enemy_config(Entity* self, int enemyIndex) {
 			enemyDefs = sj_object_get_value(enemyDefFile, "enemies");
 		}
 	}
+	eData = gfc_allocate_array(sizeof(EnemyData), 1);
 
 	enemyDef = sj_array_get_nth(enemyDefs, enemyIndex);
 	//continue implementing, adjust spawn functions
@@ -132,4 +160,8 @@ void enemy_config(Entity* self, int enemyIndex) {
 		slog("Failed to load %s enemy mesh or texture", self->name);
 	}
 	self->type = ET_Enemy; //all enemies need, not unique like other traits
+	sj_object_get_value_as_int(enemyDef, "fireCooldown", &eData->fireCooldownSet);
+	sj_object_get_value_as_int(enemyDef, "seeingRange", &eData->seeingRange);
+	sj_object_get_value_as_int(enemyDef, "projectileIndex", &eData->projectileIndex);
+	self->data = eData;
 }

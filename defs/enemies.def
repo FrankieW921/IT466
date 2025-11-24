@@ -7,31 +7,46 @@
 			"name": "Heli",
 			"mesh": "models/enemy1/enemy1.obj",
 			"texture": "models/enemy1/enemy1.png",
-			"heath": 350
+			"health": 350,
+			"fireCooldown": 60,
+			"seeingRange": 200,
+			"projectileIndex": 4
 		},
 		{
 			"name": "Tank",
 			"mesh": "models/enemy2/enemy2.obj",
 			"texture": "models/enemy2/enemy2.png",
-			"heath": 800
+			"health": 800,
+			"fireCooldown": 180,
+			"seeingRange": 300,
+			"projectileIndex": 5
 		},
 		{
 			"name": "Drone",
 			"mesh": "models/enemy3/enemy3.obj",
 			"texture": "models/enemy3/enemy3.png",
-			"heath": 350
+			"health": 350,
+			"fireCooldown": 20,
+			"seeingRange": 150,
+			"projectileIndex": 6
 		},
 		{
 			"name": "Muscle Tracer",
 			"mesh": "models/enemy4/enemy4.obj",
 			"texture": "models/enemy4/enemy4.png",
-			"heath": 2200
+			"health": 2200,
+			"fireCooldown": 30,
+			"seeingRange": 300,
+			"projectileIndex": 7
 		},
 		{
 			"name": "Turret",
 			"mesh": "models/enemy5/enemy5.obj",
 			"texture": "models/enemy5/enemy5.png",
-			"heath": 1000
+			"health": 1000,
+			"fireCooldown": 90,
+			"seeingRange": 300,
+			"projectileIndex": 8
 		}
 	]
 

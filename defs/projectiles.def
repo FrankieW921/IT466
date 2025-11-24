@@ -1,5 +1,5 @@
 {
-	"comment1": "projectiles 0-n matches up with arms 0-n",
+	"comment1": "projectiles 0-n matches up with guns 0-n where n is number of guns - 1, rest are enemy projectiles",
 	"projectiles": [
 		{
 			"name": "Scudder Bullet",
