@@ -124,6 +124,8 @@ void player_ui_update(PlayerData* data);
 
 void player_ui_draw();
 
+void player_free();
+
 void player_set_head(Head* currentHead, SJson* selectedHead);
 
 void player_set_arm(Arm* currentArm, SJson* selectedArm);
@@ -149,5 +151,12 @@ void player_add_body(PlayerData* pData, SJson* bodyToAdd);
 void player_add_leg(PlayerData* pData, SJson* legToAdd);
 void player_add_gun(PlayerData* pData, SJson* weaponToAdd);
 void player_add_shoulder(PlayerData* pData, SJson* weaponToAdd);
+
+void player_free_heads(PlayerData* pData);
+void player_free_arms(PlayerData* pData);
+void player_free_bodies(PlayerData* pData);
+void player_free_legs(PlayerData* pData);
+void player_free_weapons(PlayerData* pData);
+void player_free_shoulders(PlayerData* pData);
 
 #endif

@@ -336,7 +336,7 @@ void player_move(Entity* self) {
 			break;
 		case MS_FALLING:
 			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
-				if (contact.z == entity_floor_check(self)) { //you touched the ground, skips a frame of movement i think but its okay
+				if (contact.z == entity_floor_check(self)) { //you touched the ground
 					data->movementState = MS_ON_GROUND;
 					self->position.z = entity_floor_check(self) + .01;
 				}
@@ -349,7 +349,7 @@ void player_move(Entity* self) {
 				}
 			}
 			else if (entity_floor_check(self) == -99999) { //no floor below
-				gfc_vector3d_copy(self->position, positionPost);
+				//gfc_vector3d_copy(self->position, positionPost);
 				if (entity_roof_check(self) < 99999) { //check that there's a cieling to snap to
 					self->position.z = entity_roof_check(self) + .01;
 					data->movementState = MS_ON_GROUND;
@@ -603,6 +603,10 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 		gf2d_font_draw_line_tag(data->ui->partDescription3, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 560));
 		gf2d_font_draw_line_tag(data->ui->partDescription4, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 590));
 	}
+}
+
+void player_free() {
+
 }
 
 void player_set_head(Head* currentHead, SJson* selectedHead) {
@@ -907,4 +911,35 @@ void player_add_shoulder(PlayerData* pData, SJson* weaponToAdd) {
 	weapon->weaponTexture = gf3d_texture_load(texturePath);
 	gfc_list_append(pData->shoulderInventory, weapon);
 	pData->shoulderIndexMax = (Uint8)gfc_list_count(pData->shoulderInventory);
+}
+
+void player_free_heads(PlayerData* pData) {
+	Head* part;
+	for (int i = 0; i < gfc_list_get_count(pData->headInventory); i++) {
+		part = gfc_list_get_nth(pData->headInventory, i);
+		part->name[0] = '\0';
+		gf3d_mesh_free(part->headMesh);
+		gf3d_texture_free(part->headTexture);
+		memset(part, 0, sizeof(Head));
+	}
+}
+
+void player_free_arms(PlayerData* pData) {
+
+}
+
+void player_free_bodies(PlayerData* pData) {
+
+}
+
+void player_free_legs(PlayerData* pData) {
+
+}
+
+void player_free_weapons(PlayerData* pData) {
+
+}
+
+void player_free_shoulders(PlayerData* pData) {
+
 }
