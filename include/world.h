@@ -19,7 +19,7 @@ World* world_new();
 //@brief loads a world from json config
 //@param filename the local path of the json
 //@returns a loaded world
-World* world_load(const char* filename);
+void world_load(const char* filename);
 //brief frees the given world
 //@param w the world to free
 void world_free(World* w);
@@ -30,5 +30,7 @@ void world_draw(World* w);
 Uint8 world_edge_test(World* world, GFC_Vector3D start, GFC_Vector3D end, GFC_Vector3D* contact);
 
 void world_enemy_spawn(int enemyType, GFC_Vector3D position, GFC_Color colorMod);
+
+void world_free(World *w);
 
 #endif

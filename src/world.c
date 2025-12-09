@@ -25,8 +25,7 @@ World* world_new() {
 	return world;
 }
 
-World* world_load(const char* filename) {
-	World* world;
+void world_load(const char* filename) {
 	const char* str;
 	SJson* json, *config;
 
@@ -35,27 +34,31 @@ World* world_load(const char* filename) {
 		slog("Failed to load world file %s", filename);
 		return NULL;
 	}
-	world = world_new();
-	if (!world) {
+	if (!theWorld) { //check if we already have space allocated for 
+		theWorld = world_new();
+	}
+	
+	if (!theWorld) {
 		slog("Failed to allocate world for file %s", filename);
 		return NULL;
 	}
 	config = sj_object_get_value(json, "world");
 	str = sj_object_get_value_as_string(config, "filename");
-	world->mesh = gf3d_mesh_load(str);
+	theWorld->mesh = gf3d_mesh_load(str);
 	str = sj_object_get_value_as_string(config, "texture");
-	world->texture = gf3d_texture_load(str);
-	sj_object_get_color_value(config, "color", &world->color);
-	sj_object_get_vector3d(config, "lightPosition", &world->lightPosition);
+	theWorld->texture = gf3d_texture_load(str);
+	sj_object_get_color_value(config, "color", &theWorld->color);
+	sj_object_get_vector3d(config, "lightPosition", &theWorld->lightPosition);
 	sj_free(json);
 
-	world->entities = gfc_list_new();
+	theWorld->entities = gfc_list_new();
 
-	theWorld = world;
-	return world;
+	//theWorld = world; a remnant of a kinder time
+	//return world; Im gonna miss ur classes Professor Kehoe
 }
 
-void world_free(World* w) {
+void world_free(World* w) { //because the world is static im not going to deallocate the space sorry not sorry
+	if (!w) return;
 	gf3d_mesh_free(w->mesh);
 	gf3d_texture_free(w->texture);
 	//for loop clearing the entities in the list
@@ -63,11 +66,10 @@ void world_free(World* w) {
 		entity_free(gfc_list_get_nth(w->entities, i));
 	}
 	gfc_list_clear(w->entities);
-	theWorld = NULL; //null the pointer to the static version as well
-	memset(w, 0, sizeof(World));
 }
 
 void world_draw(World* w) {
+	if (!w) return;
 	GFC_Matrix4 id;
 	gfc_matrix4_identity(id);
 	gf3d_mesh_draw(w->mesh, id, GFC_COLOR_WHITE, w->texture, w->lightPosition, w->color);

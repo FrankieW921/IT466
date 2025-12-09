@@ -28,8 +28,10 @@ Entity* entity_new() {
 
 void entity_free(Entity* e) {
 	if (!e) return;
+	if (e->free) e->free(e);
 	gf3d_mesh_free(e->mesh);
 	gf3d_texture_free(e->texture);
+	gfc_list_clear(e->collideEntities);
 	memset(e, 0, sizeof(Entity));
 }
 

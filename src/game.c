@@ -59,7 +59,7 @@ int main(int argc,char *argv[])
     GFC_Matrix4 skyboxID;
     Texture* skyTexture;
 
-    World* testworld;
+    //World* testworld;
     GFC_Matrix4 testworldID;
     CameraEntity* ce;
     
@@ -84,7 +84,8 @@ int main(int argc,char *argv[])
     slog_sync();
     //Sprite* bg = gf2d_sprite_load_image("images/bg_flat.png");
     gf2d_mouse_load("actors/mouse.actor");
-    testworld = world_load("defs/terrain/terrain1.def");
+    //testworld = world_load("defs/terrain/terrain1.def");
+    world_load("defs/terrain/terrain1.def");
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     player_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
     world_enemy_spawn(1, gfc_vector3d(20, 20, 40), GFC_COLOR_WHITE);
@@ -116,14 +117,14 @@ int main(int argc,char *argv[])
                 entity_update_all();
                 camera_think();
                 gf3d_mesh_sky_draw(skybox, skyboxID, GFC_COLOR_WHITE, skyTexture);
-                world_draw(testworld);
-                entity_draw_all(testworld->lightPosition, GFC_COLOR_WHITE);
+                world_draw(get_the_world());
+                entity_draw_all(get_the_world()->lightPosition, GFC_COLOR_WHITE);
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 player_ui_draw();
                 draw_all_huds();
                 //gf2d_font_draw_line_tag("ALT+F4 to commit mecha epicness",FT_H4,GFC_COLOR_WHITE, gfc_vector2d(10,10));
-                //gf2d_mouse_draw();
+                gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         game_frame_delay();
@@ -185,7 +186,8 @@ void main_menu() {
     }
 
     enable_start_menu();
-    //camera_entity_free();
+    camera_entity_free();
+    world_free(get_the_world());
     init_start_buttons();
 }
 

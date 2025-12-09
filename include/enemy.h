@@ -32,5 +32,6 @@ void enemy_update4(Entity* self);
 void enemy_update5(Entity* self);
 
 void enemy_config(Entity* self, int enemyIndex);
+void enemy_free(Entity* self);
 
 #endif

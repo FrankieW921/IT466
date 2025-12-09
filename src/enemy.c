@@ -227,4 +227,13 @@ void enemy_config(Entity* self, int enemyIndex) {
 	sj_object_get_value_as_int(enemyDef, "seeingRange", &eData->seeingRange);
 	sj_object_get_value_as_int(enemyDef, "projectileIndex", &eData->projectileIndex);
 	self->data = eData;
+	self->free = enemy_free;
+}
+
+void enemy_free(Entity* self) {
+	EnemyData* eData;
+	if (!self)return;
+	eData = self->data;
+	if (!eData) return;
+	memset(eData, 0, sizeof(eData));
 }
