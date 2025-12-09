@@ -89,3 +89,7 @@ GFC_Vector3D camera_get_target() {
 	return ce->target;
 }
 
+void camera_entity_free() {
+	ce->player = NULL;
+	free(ce);
+}

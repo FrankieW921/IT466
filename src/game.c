@@ -23,11 +23,13 @@
 #include "gf3d_camera.h"
 #include "gf3d_mesh.h"
 
+#include "game.h"
 #include "entity.h"
 #include "player.h"
 #include "enemy.h"
 #include "world.h"
 #include "camera_entity.h"
+#include "hud.h"
 
 extern int __DEBUG;
 
@@ -163,6 +165,11 @@ void game_frame_delay()
 //     slog("fps: %f",fps);
 }
 
+void start_game(int stage) {
+
+
+}
+
 void main_menu() {
     Mix_Music* puzzle_boy;
 
@@ -175,6 +182,13 @@ void main_menu() {
     else {
         slog("COULDNT PLAY THE GOOD STUFF");
     }
+
+    camera_entity_free();
+}
+
+void start_edit() {
+
+
 }
 
 /*eol@eof*/

@@ -38,7 +38,7 @@ void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D p
 
 void enemy_think1(Entity* self) {
 	Entity* player;
-	EnemyData *eData;
+	EnemyData* eData;
 	GFC_Vector3D playerVector;
 
 	player = get_the_player();
@@ -48,8 +48,11 @@ void enemy_think1(Entity* self) {
 
 	playerVector = gfc_vector3d(self->position.x - player->position.x, self->position.y - player->position.y, self->position.z - player->position.z);
 	gfc_vector3d_normalize(&playerVector);
-	
+
 	enemy_thinkg(self, eData, player, playerVector);
+}
+void enemy_update1(Entity* self) {
+
 }
 
 Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
@@ -69,6 +72,21 @@ Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
 	return self;
 }
 void enemy_think2(Entity* self) {
+	Entity* player;
+	EnemyData* eData;
+	GFC_Vector3D playerVector;
+
+	player = get_the_player();
+	if (!player) return;
+	eData = self->data;
+	if (!self || !eData) return;
+
+	playerVector = gfc_vector3d(self->position.x - player->position.x, self->position.y - player->position.y, self->position.z - player->position.z);
+	gfc_vector3d_normalize(&playerVector);
+
+	enemy_thinkg(self, eData, player, playerVector);
+}
+void enemy_update2(Entity* self) {
 
 }
 
@@ -89,6 +107,21 @@ Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
 	return self;
 }
 void enemy_think3(Entity* self) {
+	Entity* player;
+	EnemyData* eData;
+	GFC_Vector3D playerVector;
+
+	player = get_the_player();
+	if (!player) return;
+	eData = self->data;
+	if (!self || !eData) return;
+
+	playerVector = gfc_vector3d(self->position.x - player->position.x, self->position.y - player->position.y, self->position.z - player->position.z);
+	gfc_vector3d_normalize(&playerVector);
+
+	enemy_thinkg(self, eData, player, playerVector);
+}
+void enemy_update3(Entity* self) {
 
 }
 
@@ -109,6 +142,21 @@ Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	return self;
 }
 void enemy_think4(Entity* self) {
+	Entity* player;
+	EnemyData* eData;
+	GFC_Vector3D playerVector;
+
+	player = get_the_player();
+	if (!player) return;
+	eData = self->data;
+	if (!self || !eData) return;
+
+	playerVector = gfc_vector3d(self->position.x - player->position.x, self->position.y - player->position.y, self->position.z - player->position.z);
+	gfc_vector3d_normalize(&playerVector);
+
+	enemy_thinkg(self, eData, player, playerVector);
+}
+void enemy_update4(Entity* self) {
 
 }
 
@@ -129,6 +177,21 @@ Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
 	return self;
 }
 void enemy_think5(Entity* self) {
+	Entity* player;
+	EnemyData* eData;
+	GFC_Vector3D playerVector;
+
+	player = get_the_player();
+	if (!player) return;
+	eData = self->data;
+	if (!self || !eData) return;
+
+	playerVector = gfc_vector3d(self->position.x - player->position.x, self->position.y - player->position.y, self->position.z - player->position.z);
+	gfc_vector3d_normalize(&playerVector);
+
+	enemy_thinkg(self, eData, player, playerVector);
+}
+void enemy_update5(Entity* self) {
 
 }
 

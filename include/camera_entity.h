@@ -22,4 +22,6 @@ Entity* camera_target_lock();
 
 GFC_Vector3D camera_get_target();
 
+void camera_entity_free();
+
 #endif

@@ -40,7 +40,6 @@ Entity* projectile_spawn(Uint8 projectileType, GFC_Vector3D position, GFC_Vector
 		sj_object_get_int(projectileObject, "damage", &data->damage);
 		sj_object_get_int(projectileObject, "speed", &data->speed);
 		sj_object_get_int(projectileObject, "timeToLive", &data->timeToLive);
-		//color
 	}
 	self->data = data;
 	self->mesh = gf3d_mesh_load("models/projectile/projectile.obj");
@@ -70,7 +69,7 @@ void projectile_update(Entity* self) {
 	self->bounds.y = self->position.y - 1;
 	self->bounds.z = self->position.z - 1;
 
-	if (data->timeToLive <= 0) projectile_free(self);
+	if (data->timeToLive == 0) projectile_free(self);
 }
 
 void projectile_move(Entity* self) {
