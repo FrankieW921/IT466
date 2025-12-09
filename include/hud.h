@@ -15,13 +15,17 @@ void init_start_buttons();
 
 void draw_all_huds();
 
-void start_button1_update(int mx, int my);
+void start_button1_update(Uint32 ms, int mx, int my);
 
-void start_button2_update(int mx, int my);
+void start_button2_update(Uint32 ms, int mx, int my);
 
-void start_button3_update(int mx, int my);
+void start_button3_update(Uint32 ms, int mx, int my);
 
-void edit_button_update(int mx, int my);
+void edit_button_update(Uint32 ms, int mx, int my);
+
+void enable_start_menu();
+
+void disable_start_menu();
 
 
 

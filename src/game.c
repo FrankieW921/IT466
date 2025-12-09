@@ -121,7 +121,8 @@ int main(int argc,char *argv[])
                 //2D draws
                 //gf2d_sprite_draw_image(bg,gfc_vector2d(0,0));
                 player_ui_draw();
-                gf2d_font_draw_line_tag("ALT+F4 to commit mecha epicness",FT_H4,GFC_COLOR_WHITE, gfc_vector2d(10,10));
+                draw_all_huds();
+                //gf2d_font_draw_line_tag("ALT+F4 to commit mecha epicness",FT_H4,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 //gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
@@ -183,7 +184,9 @@ void main_menu() {
         slog("COULDNT PLAY THE GOOD STUFF");
     }
 
-    camera_entity_free();
+    enable_start_menu();
+    //camera_entity_free();
+    init_start_buttons();
 }
 
 void start_edit() {

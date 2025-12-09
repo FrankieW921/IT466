@@ -8,7 +8,9 @@
 static CameraEntity* ce;
 
 CameraEntity* camera_entity_new() {
-	ce = gfc_allocate_array(sizeof(CameraEntity), 1);
+	if (!ce) {
+		ce = gfc_allocate_array(sizeof(CameraEntity), 1);
+	}
 	ce->player = get_the_player();
 	if (!ce->player) {
 		slog("Failed to initialize camera ent, player null");
@@ -20,6 +22,8 @@ CameraEntity* camera_entity_new() {
 }
 
 void camera_think() {
+	if (!ce) return;
+	if (!ce->player) return;
 	GFC_Vector3D playerRotation = ce->player->rotation;
 	GFC_Vector2D direction2d;
 	direction2d = gfc_vector2d_from_angle(playerRotation.z);
@@ -53,6 +57,7 @@ void camera_think() {
 }
 
 GFC_Vector3D get_view_vector() {
+	if (!ce) return;
 	GFC_Vector3D vec = gfc_vector3d(ce->position.x - ce->target.x, ce->position.y - ce->target.y, ce->position.z - ce->target.z);
 	gfc_vector3d_normalize(&vec);
 	return vec;
@@ -86,10 +91,12 @@ Entity* camera_target_lock() {
 }
 
 GFC_Vector3D camera_get_target() {
+	if (!ce) return;
 	return ce->target;
 }
 
 void camera_entity_free() {
 	ce->player = NULL;
-	free(ce);
+	memset(ce, 0, sizeof(CameraEntity));
+
 }
