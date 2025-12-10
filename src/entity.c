@@ -139,15 +139,15 @@ void entity_draw_all(GFC_Vector3D lightPos, GFC_Color colorMod) {
 
 Uint8 entity_collision_check(Entity* self, Entity* other) {
 	if (!self || !other) {
-		slog("no self or other");
+		//slog("no self or other");
 		return 0;
 	}
 	if (self->type == other->type) { //don't collide if the same type of thing
-		slog("entities of same type");
+		//slog("entities of same type");
 		return 0;
 	}
 	if ((self->type == ET_None) || (other->type == ET_None)) { //don't collide if you dont have a type
-		slog("Entity type none");
+		//slog("Entity type none");
 		return 0;
 	}
 	return gfc_box_overlap(self->bounds, other->bounds);

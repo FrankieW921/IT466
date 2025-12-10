@@ -1,9 +1,41 @@
 {
-	"world":
-	{
+	"world": {
 		"filename": "models/terrain/terrain.obj",
 		"texture": "models/terrain/terraintexture.png",
 		"color": [ 255, 255, 255, 255 ],
-		"lightPosition": [ 5, 0, 175 ]
-	}
+		"lightPosition": [ 5, 0, 175 ],
+		"mission": 1
+	},
+	"enemies": [
+		{
+			"enemyIndex": 1,
+			"x": 20,
+			"y": 20,
+			"z": 40
+		},
+		{
+			"enemyIndex": 2,
+			"x": 60,
+			"y": 20,
+			"z": 0
+		},
+		{
+			"enemyIndex": 3,
+			"x": -20,
+			"y": 20,
+			"z": 60
+		},
+		{
+			"enemyIndex": 4,
+			"x": -20,
+			"y": 20,
+			"z": 0
+		},
+		{
+			"enemyIndex": 5,
+			"x": -60,
+			"y": 20,
+			"z": 0
+		}
+	]
 }

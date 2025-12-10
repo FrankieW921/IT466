@@ -4,12 +4,19 @@
 #include "gf3d_mesh.h"
 #include "entity.h"
 
+typedef enum {
+	MISSION_DESTORY = 1, //just make it easier and not mind numbing idk
+	MISSION_SURVIVE,
+	MISSION_RACE
+}MissionType;
+
 typedef struct {
 	Mesh* mesh;
 	Texture* texture;
 	GFC_List* entities;
 	GFC_Color color;
 	GFC_Vector3D lightPosition;
+	MissionType mission;
 }World;
 
 //@brief returns the global static world

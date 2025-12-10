@@ -27,7 +27,8 @@ World* world_new() {
 
 void world_load(const char* filename) {
 	const char* str;
-	SJson* json, *config;
+	SJson* json, *config, *enemies, *enemy;
+	int enemyIndex, enemyX, enemyY, enemyZ;
 
 	json = sj_load(filename);
 	if (!json) {
@@ -42,6 +43,7 @@ void world_load(const char* filename) {
 		slog("Failed to allocate world for file %s", filename);
 		return NULL;
 	}
+
 	config = sj_object_get_value(json, "world");
 	str = sj_object_get_value_as_string(config, "filename");
 	theWorld->mesh = gf3d_mesh_load(str);
@@ -49,9 +51,21 @@ void world_load(const char* filename) {
 	theWorld->texture = gf3d_texture_load(str);
 	sj_object_get_color_value(config, "color", &theWorld->color);
 	sj_object_get_vector3d(config, "lightPosition", &theWorld->lightPosition);
-	sj_free(json);
+	sj_object_get_int(config, "mission", &theWorld->mission);
 
 	theWorld->entities = gfc_list_new();
+	enemies = sj_object_get_value(json, "enemies");
+	for (int i = 0; i < sj_array_get_count(enemies); i++) {
+		enemy = sj_array_get_nth(enemies, i);
+		sj_object_get_int(enemy, "enemyIndex", &enemyIndex);
+		sj_object_get_int(enemy, "x", &enemyX);
+		sj_object_get_int(enemy, "y", &enemyY);
+		sj_object_get_int(enemy, "z", &enemyZ);
+		world_enemy_spawn(enemyIndex, gfc_vector3d(enemyX, enemyY, enemyZ), GFC_COLOR_WHITE);
+	}
+	sj_free(json);
+
+
 
 	//theWorld = world; a remnant of a kinder time
 	//return world; Im gonna miss ur classes Professor Kehoe

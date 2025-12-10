@@ -58,10 +58,6 @@ int main(int argc,char *argv[])
     Mesh* skybox;
     GFC_Matrix4 skyboxID;
     Texture* skyTexture;
-
-    //World* testworld;
-    GFC_Matrix4 testworldID;
-    CameraEntity* ce;
     
     //initializtion    
     parse_arguments(argc,argv);
@@ -88,18 +84,12 @@ int main(int argc,char *argv[])
     world_load("defs/terrain/terrain1.def");
     gf3d_camera_look_at(gfc_vector3d(0, 0, 0), &cam);
     player_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
-    world_enemy_spawn(1, gfc_vector3d(20, 20, 40), GFC_COLOR_WHITE);
-    world_enemy_spawn(2, gfc_vector3d(60, 20, 0), GFC_COLOR_WHITE);
-    world_enemy_spawn(3, gfc_vector3d(-20, 20, 60), GFC_COLOR_WHITE);
-    world_enemy_spawn(4, gfc_vector3d(-20, 20, 0), GFC_COLOR_WHITE);
-    world_enemy_spawn(5, gfc_vector3d(-60, 20, 0), GFC_COLOR_WHITE);
-    ce = camera_entity_new();
+    camera_entity_new();
 
     skybox = gf3d_mesh_load("models/sky/sky.obj");
     skyTexture = gf3d_texture_load("models/sky/sky.png");
     gfc_matrix4_identity(skyboxID);
-
-    gfc_matrix4_identity(testworldID);
+    init_start_buttons();
 
     main_menu();
     // main game loop    
@@ -127,6 +117,7 @@ int main(int argc,char *argv[])
                 gf2d_mouse_draw();
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
+        if (gfc_input_command_down("mainMenu")) main_menu();
         game_frame_delay();
     }    
     vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());    
@@ -168,8 +159,22 @@ void game_frame_delay()
 }
 
 void start_game(int stage) {
+    if (stage == 1) {
+        world_load("defs/terrain/terrain1.def");
+    }
+    else if (stage == 2) {
+        world_load("defs/terrain/terrain1.def");
+    }
+    else if (stage == 3) {
+        world_load("defs/terrain/terrain1.def");
+    }
+    else {
+        slog("Invalid stage ID"); return;
+    }
 
-
+    player_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
+    camera_entity_new();
+    disable_start_menu();
 }
 
 void main_menu() {
@@ -189,7 +194,6 @@ void main_menu() {
     camera_entity_free();
     world_free(get_the_world());
     entity_free(get_the_player());
-    init_start_buttons();
 }
 
 void start_edit() {

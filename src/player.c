@@ -301,6 +301,9 @@ void player_update(Entity* self) {
 
 	if (self->collideEntities) {
 		slog("COLLIDING");
+		for (int i = 0; i < gfc_list_get_count(self->collideEntities); i++) {
+
+		}
 	}
 	gfc_list_clear(self->collideEntities);
 }

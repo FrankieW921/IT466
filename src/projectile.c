@@ -32,6 +32,12 @@ Entity* projectile_spawn(Uint8 projectileType, GFC_Vector3D position, GFC_Vector
 	gfc_vector3d_copy(self->position, position);
 	gfc_vector3d_copy(self->velocity, velocity);
 	self->bounds = gfc_box(self->position.x - 1, self->position.y - 1, self->position.z - 1, 2, 2, 2);
+	if (projectileType <= 2) {
+		self->type = ET_Player_Projectile;
+	}
+	else {
+		self->type = ET_Enemy_Projectile;
+	}
 	
 	projectileObject = sj_array_get_nth(projectilesDefs, projectileType);
 	data = gfc_allocate_array(sizeof(ProjectileData), 1);
