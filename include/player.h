@@ -157,6 +157,5 @@ void player_free_arms(PlayerData* pData);
 void player_free_bodies(PlayerData* pData);
 void player_free_legs(PlayerData* pData);
 void player_free_weapons(PlayerData* pData);
-void player_free_shoulders(PlayerData* pData);
 
 #endif

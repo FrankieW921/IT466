@@ -45,6 +45,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	self->update = player_update;
 	self->draw = player_draw;
 	self->type = ET_Player;
+	self->free = player_free;
 
 	player_data_new(data);
 	self->data = data;
@@ -488,7 +489,7 @@ void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod) {
 
 void player_ui_update(PlayerData* data) {
 	char* numBuffer[10];
-	if (!data) return;
+	if (!data || !data->ui) return;
 	switch (data->ui->selectedCategory) {
 		case 0:
 			strcpy(data->ui->partDescription1, "Heads");
@@ -561,7 +562,7 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 	char* buffer2[128];
 	if (!thePlayer) return;
 	data = thePlayer->data;
-	if (!data) return;
+	if (!data || !data->ui) return;
 	//draw health
 	strcpy(buffer1, "AP: ");
 	snprintf(buffer2, sizeof(buffer2), "%d", data->currentHealth);
@@ -606,7 +607,44 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 }
 
 void player_free() {
+	PlayerData* pData;
 
+	if (!thePlayer) return;
+	pData = thePlayer->data;
+	if (!pData) return;
+	slog("Freeing parts");
+	player_free_heads(pData); //this will have also freed the player's currently equipped parts
+	player_free_arms(pData);
+	player_free_bodies(pData);
+	player_free_legs(pData);
+	player_free_weapons(pData);
+	slog("Freeing lists");
+	gfc_list_clear(pData->headInventory);
+	gfc_list_clear(pData->armInventory);
+	gfc_list_clear(pData->bodyInventory);
+	gfc_list_clear(pData->legInventory);
+	gfc_list_clear(pData->gunInventory);
+	gfc_list_clear(pData->shoulderInventory);
+	slog("Freeing sjsons");
+	sj_free(pData->heads);
+	sj_free(pData->arms);
+	sj_free(pData->bodies);
+	sj_free(pData->legs);
+	sj_free(pData->guns);
+	sj_free(pData->shoulders);
+	slog("Freeing reticle sprites");
+	gf2d_sprite_free(pData->reticle);
+	gf2d_sprite_free(pData->reticleLocked);
+	slog("Freeing ui");
+	pData->ui->partDescription1[0] = '\0';
+	pData->ui->partDescription2[0] = '\0';
+	pData->ui->partDescription3[0] = '\0';
+	pData->ui->partDescription4[0] = '\0';
+	memset(pData->ui, 0 , sizeof(PlayerUI));
+	slog("Freeing pData");
+	memset(pData, 0, sizeof(PlayerData));
+	thePlayer = NULL;
+	slog("Freeing done");
 }
 
 void player_set_head(Head* currentHead, SJson* selectedHead) {
@@ -925,21 +963,52 @@ void player_free_heads(PlayerData* pData) {
 }
 
 void player_free_arms(PlayerData* pData) {
-
+	Arm* part;
+	for (int i = 0; i < gfc_list_get_count(pData->armInventory); i++) {
+		part = gfc_list_get_nth(pData->armInventory, i);
+		part->name[0] = '\0';
+		gf3d_mesh_free(part->armMesh);
+		gf3d_texture_free(part->armTexture);
+		memset(part, 0, sizeof(Arm));
+	}
 }
 
 void player_free_bodies(PlayerData* pData) {
-
+	Body* part;
+	for (int i = 0; i < gfc_list_get_count(pData->bodyInventory); i++) {
+		part = gfc_list_get_nth(pData->bodyInventory, i);
+		part->name[0] = '\0';
+		gf3d_mesh_free(part->bodyMesh);
+		gf3d_texture_free(part->bodyTexture);
+		memset(part, 0, sizeof(Body));
+	}
 }
 
 void player_free_legs(PlayerData* pData) {
-
+	Leg* part;
+	for (int i = 0; i < gfc_list_get_count(pData->legInventory); i++) {
+		part = gfc_list_get_nth(pData->legInventory, i);
+		part->name[0] = '\0';
+		gf3d_mesh_free(part->legMesh);
+		gf3d_texture_free(part->legTexture);
+		memset(part, 0, sizeof(Leg));
+	}
 }
 
 void player_free_weapons(PlayerData* pData) {
-
-}
-
-void player_free_shoulders(PlayerData* pData) {
-
+	Weapon* part;
+	for (int i = 0; i < gfc_list_get_count(pData->gunInventory); i++) {
+		part = gfc_list_get_nth(pData->gunInventory, i);
+		part->name[0] = '\0';
+		gf3d_mesh_free(part->weaponMesh);
+		gf3d_texture_free(part->weaponTexture);
+		memset(part, 0, sizeof(Weapon));
+	}
+	for (int i = 0; i < gfc_list_get_count(pData->shoulderInventory); i++) {
+		part = gfc_list_get_nth(pData->shoulderInventory, i);
+		part->name[0] = '\0';
+		gf3d_mesh_free(part->weaponMesh);
+		gf3d_texture_free(part->weaponTexture);
+		memset(part, 0, sizeof(Weapon));
+	}
 }

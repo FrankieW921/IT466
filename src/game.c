@@ -186,8 +186,9 @@ void main_menu() {
     }
 
     enable_start_menu();
-    //camera_entity_free();
-    //world_free(get_the_world());
+    camera_entity_free();
+    world_free(get_the_world());
+    entity_free(get_the_player());
     init_start_buttons();
 }
 
