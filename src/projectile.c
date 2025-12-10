@@ -102,7 +102,7 @@ void projectile_free(Entity* self) {
 	ProjectileData* data;
 	if (!self) return;
 	data = self->data;
-
+	if (!data) return;
 	memset(data, 0, sizeof(ProjectileData)); //all ints, okay
 	entity_free(self);
 }

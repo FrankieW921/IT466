@@ -24,7 +24,7 @@ void enemy_think3(Entity* self);
 void enemy_think4(Entity* self);
 void enemy_think5(Entity* self);
 
-void enemy_updateg(Entity* self);
+void enemy_updateg(Entity* self, EnemyData* eData);
 void enemy_update1(Entity* self);
 void enemy_update2(Entity* self);
 void enemy_update3(Entity* self);

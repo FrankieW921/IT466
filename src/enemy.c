@@ -2,6 +2,7 @@
 
 #include "enemy.h"
 #include "player.h"
+#include "projectile.h"
 
 static SJson* enemyDefFile = NULL;
 static SJson* enemyDefs = NULL;
@@ -34,6 +35,23 @@ void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D p
 	if (gfc_vector3d_distance_between_less_than(self->position, player->position, eData->seeingRange)) {
 			self->rotation.z = gfc_vector2d_angle(gfc_vector3dxy(playerVector));
 	}
+	self->collideEntities = entity_collide_all(self);
+}
+
+void enemy_updateg(Entity* self, EnemyData* eData) {
+	Entity* ent;
+	ProjectileData* projData;
+	if (self->collideEntities) {
+		for (int i = 0; i < gfc_list_get_count(self->collideEntities); i++) {
+			ent = gfc_list_get_nth(self->collideEntities, i);
+			if (ent->type == ET_Player_Projectile) {
+				projData = ent->data;
+				self->health -= projData->damage;
+				projectile_free(ent);
+			}
+		}
+	}
+	gfc_list_clear(self->collideEntities);
 }
 
 void enemy_think1(Entity* self) {
@@ -52,7 +70,16 @@ void enemy_think1(Entity* self) {
 	enemy_thinkg(self, eData, player, playerVector);
 }
 void enemy_update1(Entity* self) {
+	Entity* ent;
+	EnemyData* eData;
+	ProjectileData* projData;
+	if (!self) return;
+	eData = self->data;
+	if (!eData) return;
 
+	enemy_updateg(self, eData);
+
+	if (self->health <= 0) entity_free(self);
 }
 
 Entity* enemy_spawn2(GFC_Vector3D position, GFC_Color color) {
@@ -88,6 +115,7 @@ void enemy_think2(Entity* self) {
 }
 void enemy_update2(Entity* self) {
 
+	gfc_list_clear(self->collideEntities);
 }
 
 Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
@@ -123,6 +151,7 @@ void enemy_think3(Entity* self) {
 }
 void enemy_update3(Entity* self) {
 
+	gfc_list_clear(self->collideEntities);
 }
 
 Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
@@ -158,6 +187,7 @@ void enemy_think4(Entity* self) {
 }
 void enemy_update4(Entity* self) {
 
+	gfc_list_clear(self->collideEntities);
 }
 
 Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
@@ -193,6 +223,7 @@ void enemy_think5(Entity* self) {
 }
 void enemy_update5(Entity* self) {
 
+	gfc_list_clear(self->collideEntities);
 }
 
 void enemy_config(Entity* self, int enemyIndex) {

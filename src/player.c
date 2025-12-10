@@ -289,6 +289,8 @@ void player_think(Entity* self) {
 
 void player_update(Entity* self) {
 	PlayerData* data;
+	Entity* ent;
+	ProjectileData* projData;
 
 	if (!self) return;
 	data = self->data;
@@ -300,9 +302,14 @@ void player_update(Entity* self) {
 	self->bounds.z = self->position.z;
 
 	if (self->collideEntities) {
-		slog("COLLIDING");
 		for (int i = 0; i < gfc_list_get_count(self->collideEntities); i++) {
-
+			ent = gfc_list_get_nth(self->collideEntities, i);
+			if (ent->type == ET_Enemy_Projectile) {
+				slog("COLLIDING WITH ENEMY PROJECTILE");
+				projData = ent->data;
+				data->currentHealth -= projData->damage;
+				projectile_free(ent);
+			}
 		}
 	}
 	gfc_list_clear(self->collideEntities);
