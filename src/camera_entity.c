@@ -26,10 +26,14 @@ void camera_think() {
 	if (!ce->player) return;
 	GFC_Vector3D playerRotation = ce->player->rotation;
 	GFC_Vector2D direction2d;
+	GFC_Vector3D positionOffset = gfc_vector3d(-30, -30, 14); //be this far away from the player
+
 	direction2d = gfc_vector2d_from_angle(playerRotation.z);
 	gfc_vector2d_normalize(&direction2d);
-
-	GFC_Vector3D positionOffset = gfc_vector3d(-30, -30, 14); //be this far away from the player
+	if (strcmp(ce->player->name, "Editor") == 0) {
+		positionOffset.x = -40;
+		positionOffset.y = -40;
+	}
 	ce->target = ce->player->position;
 	
 
@@ -40,8 +44,8 @@ void camera_think() {
 		ce->zOffset -= .3;
 	}
 
-	if (ce->zOffset > 17) {
-		ce->zOffset = 17;
+	if (ce->zOffset > 18) {
+		ce->zOffset = 18;
 	}
 	if (ce->zOffset < 3) {
 		ce->zOffset = 3;

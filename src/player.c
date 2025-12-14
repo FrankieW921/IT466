@@ -13,6 +13,7 @@ static Entity* thePlayer;
 static Uint8 partSwapCooldown = 0;
 static Uint8 fuelRecharge = 0;
 static Uint8 boostCooldown = 0;
+static Uint8 selectedWorld = 0;
 
 static Uint8 lockedOn = 0;
 static Entity* targetedEntity = NULL;
@@ -53,6 +54,29 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	data->currentHealth = data->maxHealth;
 
 	thePlayer = self; //assign static variable
+	return self;
+}
+
+Entity* editor_spawn(GFC_Vector3D position, GFC_Color color) {
+	Entity* self; 
+
+	self = entity_new();
+	if (!self) return;
+
+	gfc_line_cpy(self->name, "Editor");
+	self->color = color;
+	self->position = position;
+	self->rotation = gfc_vector3d(0, 0, 0);
+	self->bounds = gfc_box(position.x - 2.5, position.y - 2.5, position.z, 5, 5, 5);
+	self->mesh = gf3d_mesh_load("models/player/editor.obj");
+	self->texture = gf3d_texture_load("models/player/editor.png");
+	self->think = editor_think;
+	self->update = editor_update;
+
+	self->type = ET_Player;
+
+	thePlayer = self;
+	selectedWorld = 0;
 	return self;
 }
 
@@ -397,6 +421,120 @@ void player_move(Entity* self) {
 	gfc_vector3d_add(bounds, bounds, self->velocity);
 }
 
+void editor_think(Entity* self) {
+	Uint32 mouseState;
+
+	int mx, my;
+	GFC_Vector2D direction2d;
+	Uint8 partChanged = 0;
+	float move = 0;
+	float moveStep = 0;
+
+	if (!self) return;
+
+	moveStep = .25;
+	if (partSwapCooldown > 0) { //we're going to use this as our enemy placement/mission change cooldown
+		partSwapCooldown -= 1;
+	}
+	self->velocity = gfc_vector3d(0, 0, 0);
+
+	//rotate
+	if (gfc_input_command_down("panleft")) {
+		self->rotation.z += (.25 * moveStep);
+	}
+	if (gfc_input_command_down("panright")) {
+		self->rotation.z -= (.25 * moveStep);
+	}
+	//movement
+	direction2d = gfc_vector2d_from_angle(self->rotation.z);
+	gfc_vector2d_normalize(&direction2d);
+	if (gfc_input_command_down("moveforward")) {
+		move += moveStep * 4;
+	}
+	if (gfc_input_command_down("moveback")) {
+		move -= moveStep * 4;
+	}
+	if (move) {
+		gfc_vector2d_scale(direction2d, direction2d, move);
+		gfc_vector2d_add(self->velocity, self->velocity, direction2d);
+	}
+	move = 0;
+	direction2d = gfc_vector2d_from_angle(self->rotation.z);
+	gfc_vector2d_normalize(&direction2d);
+	direction2d = gfc_vector2d_rotate(direction2d, GFC_HALF_PI);
+	if (gfc_input_command_down("moveright")) {
+		move -= moveStep * 4;
+	}
+	if (gfc_input_command_down("moveleft")) {
+		move += moveStep * 4;
+	}
+	if (move) {
+		gfc_vector2d_scale(direction2d, direction2d, move);
+		gfc_vector2d_add(self->velocity, self->velocity, direction2d);
+	}
+	if (gfc_input_command_down("jump")) {
+		self->velocity.z += moveStep * 4;
+	}
+	if (gfc_input_command_down("crouch")) {
+		self->velocity.z -= moveStep * 4;
+	}
+
+	if (gfc_input_command_down("nextHead") && partSwapCooldown == 0) {
+		world_enemy_spawn(1, self->position, GFC_COLOR_WHITE);
+		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("nextArm") && partSwapCooldown == 0) {
+		world_enemy_spawn(2, self->position, GFC_COLOR_WHITE);
+		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("nextBody") && partSwapCooldown == 0) {
+		world_enemy_spawn(3, self->position, GFC_COLOR_WHITE);
+		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("nextLeg") && partSwapCooldown == 0) {
+		world_enemy_spawn(4, self->position, GFC_COLOR_WHITE);
+		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("nextGun") && partSwapCooldown == 0) {
+		world_enemy_spawn(5, self->position, GFC_COLOR_WHITE);
+		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("nextShoulder") && partSwapCooldown == 0) {
+		selectedWorld += 1;
+		if (selectedWorld > 2) selectedWorld = 0;
+		if (selectedWorld == 0) {
+
+		}
+		else if (selectedWorld == 1) {
+
+		}
+		else if (selectedWorld == 2) {
+
+		}
+		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+}
+
+void editor_update(Entity* self) {
+	GFC_Box bounds;
+	GFC_Vector3D positionPre, positionPost, contact;
+	GFC_Vector2D direction2d;
+	if (!self) return;
+	entity_move(self);
+}
+
 void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	Head* headG; //generics for setting
 	Arm* armG;
@@ -478,6 +616,10 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	data->reticleLocked = gf2d_sprite_load_image("images/reticleLocked.png");
 
 	player_ui_update(data);
+}
+
+void editor_data_new(PlayerData* data) {
+
 }
 
 void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod) {
@@ -570,7 +712,14 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 	PlayerData* data;
 	char* buffer1[128];
 	char* buffer2[128];
+	char* buffer3[128];
 	if (!thePlayer) return;
+
+	if (strcmp(thePlayer->name, "Editor") == 0) {
+		strcpy(buffer1, "1-5: Spawn Enemies");
+		return;
+	}
+
 	data = thePlayer->data;
 	if (!data || !data->ui) return;
 	//draw health

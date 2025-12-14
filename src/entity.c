@@ -72,7 +72,7 @@ void entity_move(Entity* self) {
 	gfc_vector3d_copy(positionPre, self->position);
 	gfc_vector3d_add(positionPost, self->position, self->velocity);
 	if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
-		slog("CONTACT %f, %f, %f", contact.x, contact.y, contact.z);
+		//slog("CONTACT %f, %f, %f", contact.x, contact.y, contact.z);
 	}
 	else {
 		gfc_vector3d_copy(self->position, positionPost);

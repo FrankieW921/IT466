@@ -106,6 +106,7 @@ int main(int argc,char *argv[])
                 entity_think_all();
                 entity_update_all();
                 camera_think();
+
                 gf3d_mesh_sky_draw(skybox, skyboxID, GFC_COLOR_WHITE, skyTexture);
                 world_draw(get_the_world());
                 entity_draw_all(get_the_world()->lightPosition, GFC_COLOR_WHITE);
@@ -197,8 +198,10 @@ void main_menu() {
 }
 
 void start_edit() {
-
-
+    world_load("defs/terrain/editworld.def");
+    editor_spawn(gfc_vector3d(0, 0, 1), GFC_COLOR_WHITE);
+    camera_entity_new();
+    disable_start_menu();
 }
 
 /*eol@eof*/

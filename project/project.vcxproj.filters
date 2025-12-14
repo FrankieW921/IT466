@@ -463,5 +463,8 @@
     <None Include="..\defs\enemies.def">
       <Filter>Resource Files\defs</Filter>
     </None>
+    <None Include="..\defs\terrain\editworld.def">
+      <Filter>Resource Files\defs\terrain</Filter>
+    </None>
   </ItemGroup>
 </Project>

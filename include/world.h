@@ -5,7 +5,8 @@
 #include "entity.h"
 
 typedef enum {
-	MISSION_DESTORY = 1, //just make it easier and not mind numbing idk
+	MISSION_EDIT,
+	MISSION_DESTORY,
 	MISSION_SURVIVE,
 	MISSION_RACE
 }MissionType;
@@ -27,6 +28,8 @@ World* world_new();
 //@param filename the local path of the json
 //@returns a loaded world
 void world_load(const char* filename);
+
+void world_think(World* w);
 //brief frees the given world
 //@param w the world to free
 void world_free(World* w);

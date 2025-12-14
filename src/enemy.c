@@ -32,22 +32,37 @@ void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D p
 	if (eData->fireCooldown > 0) {
 		eData->fireCooldown -= 1;
 	}
+	self->velocity = gfc_vector3d(0, 0, 0);
 	if (gfc_vector3d_distance_between_less_than(self->position, player->position, eData->seeingRange)) {
 			self->rotation.z = gfc_vector2d_angle(gfc_vector3dxy(playerVector));
+			self->velocity = gfc_vector3d(-playerVector.x, -playerVector.y, 0);
+			self->velocity.x *= .5;
+			self->velocity.y *= .5;
+			if (eData->fireCooldown == 0) {
+				//fire enemy projectile
+			}
 	}
+	
 	self->collideEntities = entity_collide_all(self);
 }
 
 void enemy_updateg(Entity* self, EnemyData* eData) {
 	Entity* ent;
 	ProjectileData* projData;
+
+	if (strcmp(self->name, "Tank") == 0 || strcmp(self->name, "Drone") == 0 || strcmp(self->name, "Muscle Tracer") == 0) {
+		entity_move(self);
+	}
+
 	if (self->collideEntities) {
 		for (int i = 0; i < gfc_list_get_count(self->collideEntities); i++) {
 			ent = gfc_list_get_nth(self->collideEntities, i);
 			if (ent->type == ET_Player_Projectile) {
 				projData = ent->data;
-				self->health -= projData->damage;
+				//slog("Projectile Damage: %i", projData->damage);
+				self->health = self->health - projData->damage;
 				projectile_free(ent);
+				//slog("%i", self->health);
 			}
 		}
 	}
@@ -114,8 +129,16 @@ void enemy_think2(Entity* self) {
 	enemy_thinkg(self, eData, player, playerVector);
 }
 void enemy_update2(Entity* self) {
+	Entity* ent;
+	EnemyData* eData;
+	ProjectileData* projData;
+	if (!self) return;
+	eData = self->data;
+	if (!eData) return;
 
-	gfc_list_clear(self->collideEntities);
+	enemy_updateg(self, eData);
+
+	if (self->health <= 0) entity_free(self);
 }
 
 Entity* enemy_spawn3(GFC_Vector3D position, GFC_Color color) {
@@ -150,8 +173,15 @@ void enemy_think3(Entity* self) {
 	enemy_thinkg(self, eData, player, playerVector);
 }
 void enemy_update3(Entity* self) {
+	Entity* ent;
+	EnemyData* eData;
+	ProjectileData* projData;
+	if (!self) return;
+	eData = self->data;
+	if (!eData) return;
 
-	gfc_list_clear(self->collideEntities);
+	enemy_updateg(self, eData);
+	if (self->health <= 0) entity_free(self);
 }
 
 Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
@@ -186,8 +216,15 @@ void enemy_think4(Entity* self) {
 	enemy_thinkg(self, eData, player, playerVector);
 }
 void enemy_update4(Entity* self) {
+	Entity* ent;
+	EnemyData* eData;
+	ProjectileData* projData;
+	if (!self) return;
+	eData = self->data;
+	if (!eData) return;
 
-	gfc_list_clear(self->collideEntities);
+	enemy_updateg(self, eData);
+	if (self->health <= 0) entity_free(self);
 }
 
 Entity* enemy_spawn5(GFC_Vector3D position, GFC_Color color) {
@@ -222,8 +259,15 @@ void enemy_think5(Entity* self) {
 	enemy_thinkg(self, eData, player, playerVector);
 }
 void enemy_update5(Entity* self) {
+	Entity* ent;
+	EnemyData* eData;
+	ProjectileData* projData;
+	if (!self) return;
+	eData = self->data;
+	if (!eData) return;
 
-	gfc_list_clear(self->collideEntities);
+	enemy_updateg(self, eData);
+	if (self->health <= 0) entity_free(self);
 }
 
 void enemy_config(Entity* self, int enemyIndex) {

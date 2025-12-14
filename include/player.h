@@ -109,6 +109,7 @@ typedef struct {
 Entity* get_the_player();
 //@brief creates the player at a given spawn position and change its color
 Entity* player_spawn(GFC_Vector3D position, GFC_Color color);
+Entity* editor_spawn(GFC_Vector3D position, GFC_Color color);
 //@brief unique player think
 void player_think(Entity* self);
 //@brief unique player update
@@ -117,6 +118,12 @@ void player_update(Entity* self);
 void player_move(Entity* self);
 //@brief populates a player's void data* with PlayerData
 void player_data_new(PlayerData* data);
+
+void editor_think(Entity* self);
+void editor_update(Entity* self);
+
+//@brief populates the editor's void data* with curated data from this function
+void editor_data_new(PlayerData* data);
 //@brief draws the player (body parts, weapons)
 void player_draw(Entity* self, GFC_Vector3D lightPos, GFC_Color colorMod);
 

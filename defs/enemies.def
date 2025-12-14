@@ -9,7 +9,7 @@
 			"texture": "models/enemy1/enemy1.png",
 			"health": 350,
 			"fireCooldown": 60,
-			"seeingRange": 200,
+			"seeingRange": 125,
 			"projectileIndex": 4
 		},
 		{
@@ -18,7 +18,7 @@
 			"texture": "models/enemy2/enemy2.png",
 			"health": 800,
 			"fireCooldown": 180,
-			"seeingRange": 300,
+			"seeingRange": 175,
 			"projectileIndex": 5
 		},
 		{
@@ -27,7 +27,7 @@
 			"texture": "models/enemy3/enemy3.png",
 			"health": 350,
 			"fireCooldown": 20,
-			"seeingRange": 150,
+			"seeingRange": 175,
 			"projectileIndex": 6
 		},
 		{
@@ -36,7 +36,7 @@
 			"texture": "models/enemy4/enemy4.png",
 			"health": 2200,
 			"fireCooldown": 30,
-			"seeingRange": 300,
+			"seeingRange": 250,
 			"projectileIndex": 7
 		},
 		{
@@ -45,7 +45,7 @@
 			"texture": "models/enemy5/enemy5.png",
 			"health": 1000,
 			"fireCooldown": 90,
-			"seeingRange": 300,
+			"seeingRange": 250,
 			"projectileIndex": 8
 		}
 	]

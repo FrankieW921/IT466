@@ -71,6 +71,18 @@ void world_load(const char* filename) {
 	//return world; Im gonna miss ur classes Professor Kehoe
 }
 
+void world_think(World* w) {
+	if (!w) return;
+	switch (w->mission) {
+		case MISSION_DESTORY:
+			break;
+		case MISSION_RACE:
+			break;
+		case MISSION_SURVIVE:
+			break;
+	}
+}
+
 void world_free(World* w) { //because the world is static im not going to deallocate the space sorry not sorry
 	if (!w) return;
 	gf3d_mesh_free(w->mesh);

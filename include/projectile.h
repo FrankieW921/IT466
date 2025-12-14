@@ -5,7 +5,7 @@
 
 typedef struct { //get by name??
 	Uint8			projectileType; //0 for Scudder, 1 for DAC, 2 for Kurasawa
-	Uint8			damage;
+	Uint16			damage;
 	Uint8			speed; //velocity (normalized) multiplier
 	Uint16			timeToLive;
 }ProjectileData;

@@ -280,6 +280,7 @@
     <None Include="..\defs\player\shoulders.def" />
     <None Include="..\defs\player\guns.def" />
     <None Include="..\defs\projectiles.def" />
+    <None Include="..\defs\terrain\editworld.def" />
     <None Include="..\defs\terrain\terrain1.def" />
     <None Include="..\shaders\model.frag" />
     <None Include="..\shaders\model.vert" />
