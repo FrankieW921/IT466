@@ -7,6 +7,7 @@
 #include "world.h"
 #include "camera_entity.h"
 #include "projectile.h"
+#include "game.h"
 
 static Entity* thePlayer;
 
@@ -337,6 +338,7 @@ void player_update(Entity* self) {
 		}
 	}
 	gfc_list_clear(self->collideEntities);
+	if (data->currentHealth <= 0) main_menu();
 }
 
 void player_move(Entity* self) {
@@ -513,15 +515,31 @@ void editor_think(Entity* self) {
 		selectedWorld += 1;
 		if (selectedWorld > 2) selectedWorld = 0;
 		if (selectedWorld == 0) {
-
+			world_set_model("models/terrain/terrain1.obj", "models/terrain/terrain1.png");
+			get_the_world()->lightPosition.y = 0;
 		}
 		else if (selectedWorld == 1) {
-
+			world_set_model("models/terrain/terrain2.obj", "models/terrain/terrain2.png");
+			get_the_world()->lightPosition.y = 0;
 		}
 		else if (selectedWorld == 2) {
-
+			world_set_model("models/terrain/terrain3.obj", "models/terrain/terrain3.png");
+			get_the_world()->lightPosition.y = 700;
 		}
 		//player_ui_update(data);
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("partUIToggle") && partSwapCooldown == 0) {
+		if (selectedWorld == 0) {
+			world_save(selectedWorld, "models/terrain/terrain1.obj", "models/terrain/terrain1.png", 1);
+		}
+		else if (selectedWorld == 1) {
+			world_save(selectedWorld, "models/terrain/terrain2.obj", "models/terrain/terrain2.png", 2);
+		}
+		else if (selectedWorld == 2) {
+			world_save(selectedWorld, "models/terrain/terrain3.obj", "models/terrain/terrain3.png", 3);
+		}
 		partSwapCooldown = 60;
 		partChanged = 1;
 	}

@@ -1,7 +1,7 @@
 {
 	"world": {
-		"filename": "models/terrain/terrain.obj",
-		"texture": "models/terrain/terraintexture.png",
+		"filename": "models/terrain/terrain1.obj",
+		"texture": "models/terrain/terrain1.png",
 		"color": [ 255, 255, 255, 255 ],
 		"lightPosition": [ 5, 0, 250 ],
 		"mission": 1

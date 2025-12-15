@@ -71,6 +71,25 @@ void world_load(const char* filename) {
 	//return world; Im gonna miss ur classes Professor Kehoe
 }
 
+void world_save(int worldIndex, const char* meshName, const char* textureName, MissionType mType) {
+	const char* fileName[128];
+	SJson* file, *worldDef, *enemyDef, *worldBlock, *enemyBlock, *value;
+	if (worldIndex == 0) {
+		strcpy(fileName, "defs/terrain/terrain1.def");
+	}
+	else if (worldIndex == 1) {
+		strcpy(fileName, "defs/terrain/terrain2.def");
+	}
+	else if (worldIndex == 2) {
+		strcpy(fileName, "defs/terrain/terrain3.def");
+	}
+
+	file = sj_new();
+
+
+	sj_save(file, fileName);
+}
+
 void world_think(World* w) {
 	if (!w) return;
 	switch (w->mission) {
@@ -92,6 +111,18 @@ void world_free(World* w) { //because the world is static im not going to deallo
 		entity_free(gfc_list_get_nth(w->entities, i));
 	}
 	gfc_list_clear(w->entities);
+}
+
+void world_set_model(const char* meshName, const char* textureName) {
+	if (!theWorld) return;
+	if (theWorld->mesh) {
+		gf3d_mesh_free(theWorld->mesh);
+	}
+	theWorld->mesh = gf3d_mesh_load(meshName);
+	if (theWorld->texture) {
+		gf3d_texture_free(theWorld->texture);
+	}
+	theWorld->texture = gf3d_texture_load(textureName);
 }
 
 void world_draw(World* w) {

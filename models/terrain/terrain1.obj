@@ -1,6 +1,6 @@
-# Blender 4.5.4 LTS
+# Blender 5.0.0
 # www.blender.org
-mtllib terrain.mtl
+mtllib terrain1.mtl
 o Plane
 v 209.444153 209.444153 0.000000
 v -209.444153 209.444153 0.000000

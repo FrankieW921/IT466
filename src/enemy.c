@@ -28,7 +28,7 @@ Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color color) {
 void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D playerVector) {
 	if (!self) return;
 	if (!eData) return;
-
+	if (strcmp(get_the_player()->name, "Editor") == 0) return;
 	if (eData->fireCooldown > 0) {
 		eData->fireCooldown -= 1;
 	}
@@ -39,7 +39,8 @@ void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D p
 			self->velocity.x *= .5;
 			self->velocity.y *= .5;
 			if (eData->fireCooldown == 0) {
-				//fire enemy projectile
+				projectile_spawn(eData->projectileIndex, self->position, gfc_vector3d(-playerVector.x, -playerVector.y, -playerVector.z));
+				eData->fireCooldown = eData->fireCooldownSet;
 			}
 	}
 	
@@ -49,7 +50,7 @@ void enemy_thinkg(Entity* self, EnemyData* eData, Entity* player, GFC_Vector3D p
 void enemy_updateg(Entity* self, EnemyData* eData) {
 	Entity* ent;
 	ProjectileData* projData;
-
+	if (strcmp(get_the_player()->name, "Editor") == 0) return;
 	if (strcmp(self->name, "Tank") == 0 || strcmp(self->name, "Drone") == 0 || strcmp(self->name, "Muscle Tracer") == 0) {
 		entity_move(self);
 	}

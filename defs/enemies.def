@@ -10,7 +10,7 @@
 			"health": 350,
 			"fireCooldown": 60,
 			"seeingRange": 125,
-			"projectileIndex": 4
+			"projectileIndex": 3
 		},
 		{
 			"name": "Tank",
@@ -19,7 +19,7 @@
 			"health": 800,
 			"fireCooldown": 180,
 			"seeingRange": 175,
-			"projectileIndex": 5
+			"projectileIndex": 4
 		},
 		{
 			"name": "Drone",
@@ -28,7 +28,7 @@
 			"health": 350,
 			"fireCooldown": 20,
 			"seeingRange": 175,
-			"projectileIndex": 6
+			"projectileIndex": 5
 		},
 		{
 			"name": "Muscle Tracer",
@@ -37,7 +37,7 @@
 			"health": 2200,
 			"fireCooldown": 30,
 			"seeingRange": 250,
-			"projectileIndex": 7
+			"projectileIndex": 6
 		},
 		{
 			"name": "Turret",
@@ -46,7 +46,7 @@
 			"health": 1000,
 			"fireCooldown": 90,
 			"seeingRange": 250,
-			"projectileIndex": 8
+			"projectileIndex": 7
 		}
 	]
 

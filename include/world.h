@@ -29,10 +29,13 @@ World* world_new();
 //@returns a loaded world
 void world_load(const char* filename);
 
+void world_save(int worldIndex, const char* meshName, const char* textureName, MissionType mType);
 void world_think(World* w);
 //brief frees the given world
 //@param w the world to free
 void world_free(World* w);
+
+void world_set_model(const char* meshName, const char* textureName);
 //brief draws the given world
 //@param w the world to draw
 void world_draw(World* w);
