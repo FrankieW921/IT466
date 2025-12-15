@@ -52,7 +52,7 @@ void start_button1_update(Uint32 ms, int mx, int my) {
 void start_button2_update(Uint32 ms, int mx, int my) {
 	if (!startButton2) return;
 	gf2d_sprite_draw_image(startButton2->buttonSprite, gfc_vector2d(100, 250));
-	if ((ms & 1) && (mx >= 100 && mx < 300) && (my >= 250 && my < 250) && (startMenu == 1)) {
+	if ((ms & 1) && (mx >= 100 && mx < 300) && (my >= 250 && my < 350) && (startMenu == 1)) {
 		start_game(2);
 	}
 }

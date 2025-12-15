@@ -73,7 +73,11 @@ void world_load(const char* filename) {
 
 void world_save(int worldIndex, const char* meshName, const char* textureName, MissionType mType) {
 	const char* fileName[128];
-	SJson* file, *worldDef, *enemyDef, *worldBlock, *enemyBlock, *value;
+	Entity* enemy;
+	EnemyData* eData;
+	SJson* file, *worldDef, *enemyDef, *worldBlock, *enemyArray, *enemyBlock, *value;
+	int enemyIndex, enemyX, enemyY, enemyZ;
+
 	if (worldIndex == 0) {
 		strcpy(fileName, "defs/terrain/terrain1.def");
 	}
@@ -83,10 +87,40 @@ void world_save(int worldIndex, const char* meshName, const char* textureName, M
 	else if (worldIndex == 2) {
 		strcpy(fileName, "defs/terrain/terrain3.def");
 	}
+	file = sj_object_new();
+	worldBlock = sj_object_new();
+	enemyArray = sj_array_new();
 
-	file = sj_new();
+	sj_object_insert(worldBlock, "filename", sj_new_str(meshName));
+	sj_object_insert(worldBlock, "texture", sj_new_str(textureName));
+	value = sj_array_new();
+	for (int i = 0; i < 4; i++) sj_array_append(value, sj_new_int(255));
+	sj_object_insert(worldBlock, "color", value);
+	value = sj_array_new();
+	sj_array_append(value, sj_new_int(theWorld->lightPosition.x));
+	sj_array_append(value, sj_new_int(theWorld->lightPosition.y));
+	sj_array_append(value, sj_new_int(theWorld->lightPosition.z));
+	sj_object_insert(worldBlock, "lightPosition", value);
+	sj_object_insert(worldBlock, "mission", sj_new_int(mType));
 
+	for (int i = 0; i < gfc_list_get_count(theWorld->entities); i++) {
+		enemyBlock = sj_object_new();
+		enemy = gfc_list_get_nth(theWorld->entities, i);
+		eData = enemy->data;
+		enemyIndex = eData->enemyIndex;
+		enemyX = (int)enemy->position.x;
+		enemyY = (int)enemy->position.y;
+		enemyZ = (int)enemy->position.z;
+		sj_object_insert(enemyBlock, "enemyIndex", sj_new_int(enemyIndex));
+		sj_object_insert(enemyBlock, "x", sj_new_int(enemyX));
+		sj_object_insert(enemyBlock, "y", sj_new_int(enemyY));
+		sj_object_insert(enemyBlock, "z", sj_new_int(enemyZ));
+		sj_array_append(enemyArray, enemyBlock);
+	}
 
+	sj_object_insert(file, "world", worldBlock);
+	sj_object_insert(file, "enemies", enemyArray);
+	slog("Saving World: %s", fileName);
 	sj_save(file, fileName);
 }
 

@@ -94,6 +94,9 @@ void enemy_update1(Entity* self) {
 	if (!eData) return;
 
 	enemy_updateg(self, eData);
+	self->bounds.x = self->position.x -1.5;
+	self->bounds.y = self->position.y - 1.5;
+	self->bounds.z = self->position.z - 1.5;
 
 	if (self->health <= 0) entity_free(self);
 }
@@ -138,6 +141,9 @@ void enemy_update2(Entity* self) {
 	if (!eData) return;
 
 	enemy_updateg(self, eData);
+	self->bounds.x = self->position.x - 1.5;
+	self->bounds.y = self->position.y - 1.5;
+	self->bounds.z = self->position.z;
 
 	if (self->health <= 0) entity_free(self);
 }
@@ -182,6 +188,9 @@ void enemy_update3(Entity* self) {
 	if (!eData) return;
 
 	enemy_updateg(self, eData);
+	self->bounds.x = self->position.x - 1;
+	self->bounds.y = self->position.y - 1;
+	self->bounds.z = self->position.z - 1;
 	if (self->health <= 0) entity_free(self);
 }
 
@@ -193,7 +202,7 @@ Entity* enemy_spawn4(GFC_Vector3D position, GFC_Color color) {
 	enemy_config(self, 4);
 	self->color = color;
 	self->position = position;
-	self->bounds = gfc_box(position.x - 2, position.y - 2, position.z, 4, 4, 8.5);
+	self->bounds = gfc_box(position.x - 3, position.y - 3, position.z, 6, 6, 10);
 	self->rotation = gfc_vector3d(0, 0, 0);
 	//void (*draw)(Entity_S);
 	self->think = enemy_think4;
@@ -225,6 +234,9 @@ void enemy_update4(Entity* self) {
 	if (!eData) return;
 
 	enemy_updateg(self, eData);
+	self->bounds.x = self->position.x - 3;
+	self->bounds.y = self->position.y - 3;
+	self->bounds.z = self->position.z ;
 	if (self->health <= 0) entity_free(self);
 }
 
@@ -268,6 +280,9 @@ void enemy_update5(Entity* self) {
 	if (!eData) return;
 
 	enemy_updateg(self, eData);
+	self->bounds.x = self->position.x - 1;
+	self->bounds.y = self->position.y - 1;
+	self->bounds.z = self->position.z ;
 	if (self->health <= 0) entity_free(self);
 }
 
@@ -299,9 +314,11 @@ void enemy_config(Entity* self, int enemyIndex) {
 		slog("Failed to load %s enemy mesh or texture", self->name);
 	}
 	self->type = ET_Enemy; //all enemies need, not unique like other traits
+	eData->enemyIndex = enemyIndex;
 	sj_object_get_value_as_int(enemyDef, "fireCooldown", &eData->fireCooldownSet);
 	sj_object_get_value_as_int(enemyDef, "seeingRange", &eData->seeingRange);
 	sj_object_get_value_as_int(enemyDef, "projectileIndex", &eData->projectileIndex);
+	eData->fireCooldown = eData->fireCooldownSet;
 	self->data = eData;
 	self->free = enemy_free;
 }

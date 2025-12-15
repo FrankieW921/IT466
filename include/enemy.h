@@ -4,6 +4,7 @@
 #include "entity.h"
 
 typedef struct {
+	Uint8 enemyIndex;
 	Uint16 fireCooldown;
 	Uint16 fireCooldownSet;
 	Uint16 seeingRange;

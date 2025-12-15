@@ -164,10 +164,10 @@ void start_game(int stage) {
         world_load("defs/terrain/terrain1.def");
     }
     else if (stage == 2) {
-        world_load("defs/terrain/terrain1.def");
+        world_load("defs/terrain/terrain2.def");
     }
     else if (stage == 3) {
-        world_load("defs/terrain/terrain1.def");
+        world_load("defs/terrain/terrain3.def");
     }
     else {
         slog("Invalid stage ID"); return;

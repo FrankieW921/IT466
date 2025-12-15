@@ -41,7 +41,7 @@ Entity* player_spawn(GFC_Vector3D position, GFC_Color color) {
 	self->color = color;
 	self->position = position;
 	self->rotation = gfc_vector3d(0, 0, 0);
-	self->bounds = gfc_box(position.x-1.75, position.y-1.75, position.z, 3.5, 3.5, 11.5);
+	self->bounds = gfc_box(position.x-2, position.y-2, position.z, 4, 4, 11.5);
 	//entity defaults to scale of 1, 1, 1
 	self->think = player_think;
 	self->update = player_update;
@@ -530,15 +530,43 @@ void editor_think(Entity* self) {
 		partSwapCooldown = 60;
 		partChanged = 1;
 	}
-	if (gfc_input_command_down("partUIToggle") && partSwapCooldown == 0) {
+	if (gfc_input_command_down("save1") && partSwapCooldown == 0) {
+		/* NOT YET, NO WANT BREAKY
 		if (selectedWorld == 0) {
-			world_save(selectedWorld, "models/terrain/terrain1.obj", "models/terrain/terrain1.png", 1);
+			world_save(0, "models/terrain/terrain1.obj", "models/terrain/terrain1.png", 1);
 		}
 		else if (selectedWorld == 1) {
-			world_save(selectedWorld, "models/terrain/terrain2.obj", "models/terrain/terrain2.png", 2);
+			world_save(0, "models/terrain/terrain2.obj", "models/terrain/terrain2.png", 2);
 		}
 		else if (selectedWorld == 2) {
-			world_save(selectedWorld, "models/terrain/terrain3.obj", "models/terrain/terrain3.png", 3);
+			world_save(0, "models/terrain/terrain3.obj", "models/terrain/terrain3.png", 3);
+		}
+		*/
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("save2") && partSwapCooldown == 0) {
+		if (selectedWorld == 0) {
+			world_save(1, "models/terrain/terrain1.obj", "models/terrain/terrain1.png", 1);
+		}
+		else if (selectedWorld == 1) {
+			world_save(1, "models/terrain/terrain2.obj", "models/terrain/terrain2.png", 2);
+		}
+		else if (selectedWorld == 2) {
+			world_save(1, "models/terrain/terrain3.obj", "models/terrain/terrain3.png", 3);
+		}
+		partSwapCooldown = 60;
+		partChanged = 1;
+	}
+	if (gfc_input_command_down("save3") && partSwapCooldown == 0) {
+		if (selectedWorld == 0) {
+			world_save(2, "models/terrain/terrain1.obj", "models/terrain/terrain1.png", 1);
+		}
+		else if (selectedWorld == 1) {
+			world_save(2, "models/terrain/terrain2.obj", "models/terrain/terrain2.png", 2);
+		}
+		else if (selectedWorld == 2) {
+			world_save(2, "models/terrain/terrain3.obj", "models/terrain/terrain3.png", 3);
 		}
 		partSwapCooldown = 60;
 		partChanged = 1;
