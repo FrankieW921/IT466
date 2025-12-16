@@ -305,6 +305,15 @@ void player_think(Entity* self) {
 			projectile_spawn(data->gunIndex, shootPosition, shootVelocity);
 		}
 		data->fireCooldoown = data->gun->cooldown;
+		if (data->gunIndex == 0) {
+			gfc_sound_play(data->gunSound1, 0, .4, 1);
+		}
+		else if (data->gunIndex == 1) {
+			gfc_sound_play(data->gunSound2, 0, .4, 1);
+		}
+		else if (data->gunIndex == 2) {
+			gfc_sound_play(data->gunSound3, 0, .4, 1);
+		}
 	}
 	
 	mouseState = SDL_GetMouseState(&mx, &my);
@@ -370,6 +379,7 @@ void player_move(Entity* self) {
 			else { //not touching wall
 				gfc_vector3d_copy(self->position, positionPost);
 			}
+			data->leg->legMesh = data->leg->groundLegMesh;
 			break;
 		case MS_FALLING:
 			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
@@ -395,6 +405,7 @@ void player_move(Entity* self) {
 			else { //freefall
 				gfc_vector3d_copy(self->position, positionPost);
 			}
+			data->leg->legMesh = data->leg->fallLegMesh;
 			break;
 		case MS_FLYING:
 			if (world_edge_test(get_the_world(), positionPre, positionPost, &contact)) {
@@ -413,6 +424,7 @@ void player_move(Entity* self) {
 			else { //freefly
 				gfc_vector3d_copy(self->position, positionPost);
 			}
+			data->leg->legMesh = data->leg->fallLegMesh;
 			break;
 	}
 	gfc_vector2d_scale(self->velocity, self->velocity, .90);
@@ -593,6 +605,10 @@ void player_data_new(PlayerData* data) { //hardcode the stuff for now
 	data->ui = gfc_allocate_array(sizeof(PlayerUI), 1);
 	data->ui->enabled = 1;
 	data->ui->selectedCategory = 0; //0 for Heads by default
+
+	data->gunSound1 = gfc_sound_load("sounds/PISTOL3.WAV", .1, 1);
+	data->gunSound2 = gfc_sound_load("sounds/PISTOL5.WAV", .1, 1);
+	data->gunSound3 = gfc_sound_load("sounds/PLASMA1.WAV", .1, 1);
 		
 	data->leg = gfc_allocate_array(sizeof(Leg), 1); //player personal parts
 	data->body = gfc_allocate_array(sizeof(Body), 1);
@@ -763,6 +779,11 @@ void player_ui_draw() { //use static player instance to be easily accesible in g
 
 	if (strcmp(thePlayer->name, "Editor") == 0) {
 		strcpy(buffer1, "1-5: Spawn Enemies");
+		strcpy(buffer2, "6: Change World");
+		strcpy(buffer3, "CTRL + 8/9/0: Save to slot 1/2/3");
+		gf2d_font_draw_line_tag(buffer1, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 500));
+		gf2d_font_draw_line_tag(buffer2, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 530));
+		gf2d_font_draw_line_tag(buffer3, FT_H4, GFC_COLOR_LIGHTRED, gfc_vector2d(10, 560));
 		return;
 	}
 
@@ -837,6 +858,10 @@ void player_free() {
 	sj_free(pData->legs);
 	sj_free(pData->guns);
 	sj_free(pData->shoulders);
+	slog("Freeing gun sounds");
+	gfc_sound_free(pData->gunSound1);
+	gfc_sound_free(pData->gunSound2);
+	gfc_sound_free(pData->gunSound3);
 	slog("Freeing reticle sprites");
 	gf2d_sprite_free(pData->reticle);
 	gf2d_sprite_free(pData->reticleLocked);
@@ -915,6 +940,7 @@ void player_set_body(Body* currentBody, SJson* selectedBody) {
 
 void player_set_leg(Leg* currentLeg, SJson* selectedLeg) {
 	const char* meshPath;
+	const char* meshPath2;
 	const char* texturePath;
 	if (!currentLeg || !selectedLeg) {
 		return;
@@ -923,6 +949,7 @@ void player_set_leg(Leg* currentLeg, SJson* selectedLeg) {
 	sj_object_get_value_as_int(selectedLeg, "health", &currentLeg->health);
 	sj_object_get_value_as_float(selectedLeg, "speed", &currentLeg->speed);
 	meshPath = sj_object_get_value_as_string(selectedLeg, "mesh");
+	meshPath2 = sj_object_get_value_as_string(selectedLeg, "mesh2");
 	texturePath = sj_object_get_value_as_string(selectedLeg, "texture");
 	if (currentLeg->legMesh) {
 		gf3d_mesh_free(currentLeg->legMesh);
@@ -930,7 +957,9 @@ void player_set_leg(Leg* currentLeg, SJson* selectedLeg) {
 	if (currentLeg->legTexture) {
 		gf3d_texture_free(currentLeg->legTexture);
 	}
-	currentLeg->legMesh = gf3d_mesh_load(meshPath);
+	currentLeg->groundLegMesh = gf3d_mesh_load(meshPath);
+	currentLeg->fallLegMesh = gf3d_mesh_load(meshPath2);
+	currentLeg->legMesh = currentLeg->groundLegMesh;
 	currentLeg->legTexture = gf3d_texture_load(texturePath);
 }
 
@@ -1104,6 +1133,7 @@ void player_add_body(PlayerData* pData, SJson* bodyToAdd) {
 
 void player_add_leg(PlayerData* pData, SJson* legToAdd) {
 	const char* meshPath;
+	const char* meshPath2;
 	const char* texturePath;
 	Leg* leg;
 	if (!pData || !legToAdd) return NULL;
@@ -1113,8 +1143,11 @@ void player_add_leg(PlayerData* pData, SJson* legToAdd) {
 	sj_object_get_value_as_int(legToAdd, "health", &leg->health);
 	sj_object_get_value_as_float(legToAdd, "speed", &leg->speed);
 	meshPath = sj_object_get_value_as_string(legToAdd, "mesh");
+	meshPath2 = sj_object_get_value_as_string(legToAdd, "mesh2");
 	texturePath = sj_object_get_value_as_string(legToAdd, "texture");
-	leg->legMesh = gf3d_mesh_load(meshPath);
+	leg->groundLegMesh = gf3d_mesh_load(meshPath);
+	leg->fallLegMesh = gf3d_mesh_load(meshPath2);
+	leg->legMesh = leg->groundLegMesh;
 	leg->legTexture = gf3d_texture_load(texturePath);
 	gfc_list_append(pData->legInventory, leg);
 	pData->legIndexMax = (Uint8)gfc_list_count(pData->legInventory);
@@ -1194,7 +1227,8 @@ void player_free_legs(PlayerData* pData) {
 	for (int i = 0; i < gfc_list_get_count(pData->legInventory); i++) {
 		part = gfc_list_get_nth(pData->legInventory, i);
 		part->name[0] = '\0';
-		gf3d_mesh_free(part->legMesh);
+		gf3d_mesh_free(part->groundLegMesh);
+		gf3d_mesh_free(part->fallLegMesh);
 		gf3d_texture_free(part->legTexture);
 		memset(part, 0, sizeof(Leg));
 	}

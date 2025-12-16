@@ -1,6 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+#include "gfc_audio.h"
 #include "gf2d_sprite.h"
 
 #include "entity.h"
@@ -32,6 +33,8 @@ typedef struct {
 	Uint16 health;
 	float speed;
 	Mesh* legMesh;
+	Mesh* groundLegMesh;
+	Mesh* fallLegMesh;
 	Texture* legTexture;
 }Leg;
 
@@ -67,6 +70,9 @@ typedef struct {
 	Uint16			dashCooldown;
 	Uint16			fireCooldoown;
 	PlayerUI*		ui;
+	GFC_Sound*		gunSound1;
+	GFC_Sound*		gunSound2;
+	GFC_Sound*		gunSound3;
 
 	Sprite* reticle;
 	Sprite* reticleLocked;

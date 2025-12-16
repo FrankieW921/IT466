@@ -36,6 +36,7 @@ extern int __DEBUG;
 static int _done = 0;
 static Uint32 frame_delay = 33;
 static float fps = 0;
+static Mix_Music* track;
 
 void parse_arguments(int argc,char *argv[]);
 void game_frame_delay();
@@ -69,7 +70,7 @@ int main(int argc,char *argv[])
     gfc_action_init(1024);
     //audio
     gfc_sound_init_config("config/audio.cfg");
-    Mix_VolumeMusic(24);
+    Mix_VolumeMusic(16);
     //gf3d init
     gf3d_vgraphics_init("config/setup.cfg");
     gf2d_font_init("config/font.cfg");
@@ -116,6 +117,7 @@ int main(int argc,char *argv[])
                 draw_all_huds();
                 //gf2d_font_draw_line_tag("ALT+F4 to commit mecha epicness",FT_H4,GFC_COLOR_WHITE, gfc_vector2d(10,10));
                 gf2d_mouse_draw();
+                world_think(get_the_world());
         gf3d_vgraphics_render_end();
         if (gfc_input_command_down("exit"))_done = 1; // exit condition
         if (gfc_input_command_down("mainMenu")) main_menu();
@@ -160,6 +162,17 @@ void game_frame_delay()
 }
 
 void start_game(int stage) {
+    if (track) Mix_FreeMusic(track);
+    Mix_HaltMusic();
+    track = Mix_LoadMUS("music/Battle-a2.mp3");
+    if (track) {
+        slog("TRYING TO PLAY MOOSIC");
+        Mix_PlayMusic(track, -1);
+    }
+    else {
+        slog("COULDNT PLAY THE GOOD STUFF");
+    }
+
     if (stage == 1) {
         world_load("defs/terrain/terrain1.def");
     }
@@ -179,13 +192,12 @@ void start_game(int stage) {
 }
 
 void main_menu() {
-    Mix_Music* puzzle_boy;
-
+    if (track) Mix_FreeMusic(track);
     Mix_HaltMusic();
-    puzzle_boy = Mix_LoadMUS("music/Puzzle_Boy.mp3");
-    if (puzzle_boy) {
+    track = Mix_LoadMUS("music/AC4Atitle.mp3");
+    if (track) {
         slog("TRYING TO PLAY MOOSIC");
-        Mix_PlayMusic(puzzle_boy, -1);
+        Mix_PlayMusic(track, -1);
     }
     else {
         slog("COULDNT PLAY THE GOOD STUFF");

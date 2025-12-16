@@ -7,6 +7,7 @@ static Hud* startButton1;
 static Hud* startButton2;
 static Hud* startButton3;
 static Hud* editButton;
+static Hud* title;
 
 static Uint8 doDrawPartsHuds;
 
@@ -18,11 +19,13 @@ void init_start_buttons() {
 	startButton2 = gfc_allocate_array(sizeof(Hud), 1);
 	startButton3 = gfc_allocate_array(sizeof(Hud), 1);
 	editButton = gfc_allocate_array(sizeof(Hud), 1);
+	title = gfc_allocate_array(sizeof(Hud), 1);
 
 	startButton1->buttonSprite = gf2d_sprite_load_image("images/start1.png");
 	startButton2->buttonSprite = gf2d_sprite_load_image("images/start2.png");
 	startButton3->buttonSprite = gf2d_sprite_load_image("images/start3.png");
 	editButton->buttonSprite = gf2d_sprite_load_image("images/edit.png");
+	title->buttonSprite = gf2d_sprite_load_image("images/title.png");
 
 	startButton1->button_update = start_button1_update;
 	startButton2->button_update = start_button2_update;
@@ -39,6 +42,7 @@ void draw_all_huds() {
 	start_button2_update(mouseState, mx, my);
 	start_button3_update(mouseState, mx, my);
 	edit_button_update(mouseState, mx, my);
+	if (title) gf2d_sprite_draw_image(title->buttonSprite, gfc_vector2d(400, 100));
 }
 
 void start_button1_update(Uint32 ms, int mx, int my) {

@@ -6,6 +6,7 @@
 #include "gf3d_obj_load.h"
 #include "world.h"
 #include "enemy.h"
+#include "game.h"
 
 static World* theWorld;
 
@@ -125,7 +126,9 @@ void world_save(int worldIndex, const char* meshName, const char* textureName, M
 }
 
 void world_think(World* w) {
+	Entity* ent;
 	if (!w) return;
+	if (!theWorld) return;
 	switch (w->mission) {
 		case MISSION_DESTORY:
 			break;

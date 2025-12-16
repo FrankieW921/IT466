@@ -84,6 +84,15 @@ void enemy_think1(Entity* self) {
 	gfc_vector3d_normalize(&playerVector);
 
 	enemy_thinkg(self, eData, player, playerVector);
+	if (self->mesh == eData->animationMesh1) {
+		self->mesh = eData->animationMesh2;
+	}
+	else if(self->mesh == eData->animationMesh2) {
+		self->mesh = eData->animationMesh3;
+	}
+	else if (self->mesh == eData->animationMesh3) {
+		self->mesh = eData->animationMesh1;
+	}
 }
 void enemy_update1(Entity* self) {
 	Entity* ent;
@@ -307,7 +316,16 @@ void enemy_config(Entity* self, int enemyIndex) {
 	enemyDef = sj_array_get_nth(enemyDefs, enemyIndex);
 	//continue implementing, adjust spawn functions
 	strcpy(self->name, sj_object_get_value_as_string(enemyDef, "name"));
-	self->mesh = gf3d_mesh_load(sj_object_get_value_as_string(enemyDef, "mesh"));
+	if (enemyIndex == 1) {
+		eData->animationMesh1 = gf3d_mesh_load(sj_object_get_value_as_string(enemyDef, "mesh"));
+		eData->animationMesh2 = gf3d_mesh_load(sj_object_get_value_as_string(enemyDef, "mesh2"));
+		eData->animationMesh3 = gf3d_mesh_load(sj_object_get_value_as_string(enemyDef, "mesh3"));
+		self->mesh = eData->animationMesh1;
+	}
+	else {
+		self->mesh = gf3d_mesh_load(sj_object_get_value_as_string(enemyDef, "mesh"));
+	}
+	
 	self->texture = gf3d_texture_load(sj_object_get_value_as_string(enemyDef, "texture"));
 	sj_object_get_value_as_int(enemyDef, "health", &self->health);
 	if (!self->mesh || !self->texture) {
@@ -328,5 +346,8 @@ void enemy_free(Entity* self) {
 	if (!self)return;
 	eData = self->data;
 	if (!eData) return;
+	if (eData->animationMesh1) gf3d_mesh_free(eData->animationMesh1);
+	if (eData->animationMesh2) gf3d_mesh_free(eData->animationMesh2);
+	if (eData->animationMesh3) gf3d_mesh_free(eData->animationMesh3);
 	memset(eData, 0, sizeof(eData));
 }

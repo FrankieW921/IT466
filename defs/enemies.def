@@ -6,6 +6,8 @@
 		{
 			"name": "Heli",
 			"mesh": "models/enemy1/enemy1.obj",
+			"mesh2": "models/enemy1/enemy1-2.obj",
+			"mesh3": "models/enemy1/enemy1-3.obj",
 			"texture": "models/enemy1/enemy1.png",
 			"health": 350,
 			"fireCooldown": 60,

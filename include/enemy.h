@@ -9,6 +9,9 @@ typedef struct {
 	Uint16 fireCooldownSet;
 	Uint16 seeingRange;
 	Uint8 projectileIndex;
+	Mesh* animationMesh1;
+	Mesh* animationMesh2;
+	Mesh* animationMesh3;
 }EnemyData;
 
 Entity* enemy_spawn1(GFC_Vector3D position, GFC_Color colorMod);

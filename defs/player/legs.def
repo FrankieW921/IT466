@@ -3,6 +3,7 @@
 		{
 			"name": "Standard",
 			"mesh": "models/player/legs1.obj",
+			"mesh2": "models/player/legs1-2.obj",
 			"texture": "models/player/mech1texture.png",
 			"health": 1000,
 			"speed": 0.2
@@ -10,6 +11,7 @@
 		{
 			"name": "Speed",
 			"mesh": "models/player/legs2.obj",
+			"mesh2": "models/player/legs2-2.obj",
 			"texture": "models/player/mech2texture.png",
 			"health": 750,
 			"speed": 0.35
@@ -17,6 +19,7 @@
 		{
 			"name": "Bulk",
 			"mesh": "models/player/legs3.obj",
+			"mesh2": "models/player/legs3-2.obj",
 			"texture": "models/player/mech3texture.png",
 			"health": 1300,
 			"speed": 0.12
