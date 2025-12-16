@@ -5,6 +5,7 @@
       "damage": 200,
       "cooldown": 20,
       "mesh": "models/weapons/weapon1.obj",
+      "mesh2": "models/weapons/weapon1-2.obj",
       "texture": "models/weapons/weapon1.png"
     },
     {
@@ -12,6 +13,7 @@
       "damage": 400,
       "cooldown": 50,
       "mesh": "models/weapons/weapon2.obj",
+      "mesh2": "models/weapons/weapon2-2.obj",
       "texture": "models/weapons/weapon2.png"
     },
     {
@@ -19,6 +21,7 @@
       "damage": 150,
       "cooldown": 15,
       "mesh": "models/weapons/weapon3.obj",
+      "mesh2": "models/weapons/weapon3-2.obj",
       "texture": "models/weapons/weapon3.png"
     }
   ]

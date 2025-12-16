@@ -111,6 +111,14 @@ void player_think(Entity* self) {
 
 	if (data->fireCooldoown > 0) {
 		data->fireCooldoown -= 1;
+		if (data->fireCooldoown < 10) {
+			data->arm->armMesh = data->arm->restArmMesh;
+			data->gun->weaponMesh = data->gun->restWeaponMesh;
+		}
+		else {
+			data->arm->armMesh = data->arm->firedArmMesh;
+			data->gun->weaponMesh = data->gun->firedWeaponMesh;
+		}
 	}
 
 	//rotate player
@@ -1098,6 +1106,7 @@ void player_add_head(PlayerData* pData, SJson* headToAdd) {
 
 void player_add_arm(PlayerData* pData, SJson* armToAdd) {
 	const char* meshPath;
+	const char* meshPath2;
 	const char* texturePath;
 	Arm* arm;
 	if (!pData || !armToAdd) return NULL;
@@ -1106,8 +1115,11 @@ void player_add_arm(PlayerData* pData, SJson* armToAdd) {
 	strcpy(arm->name, sj_object_get_value_as_string(armToAdd, "name"));
 	sj_object_get_value_as_int(armToAdd, "health", &arm->health);
 	meshPath = sj_object_get_value_as_string(armToAdd, "mesh");
+	meshPath2 = sj_object_get_value_as_string(armToAdd, "mesh2");
 	texturePath = sj_object_get_value_as_string(armToAdd, "texture");
-	arm->armMesh = gf3d_mesh_load(meshPath);
+	arm->restArmMesh = gf3d_mesh_load(meshPath);
+	arm->firedArmMesh = gf3d_mesh_load(meshPath2);
+	arm->armMesh = arm->restArmMesh;
 	arm->armTexture = gf3d_texture_load(texturePath);
 	gfc_list_append(pData->armInventory, arm);
 	pData->armIndexMax = (Uint8)gfc_list_count(pData->armInventory);
@@ -1155,6 +1167,7 @@ void player_add_leg(PlayerData* pData, SJson* legToAdd) {
 
 void player_add_gun(PlayerData* pData, SJson* weaponToAdd) {
 	const char* meshPath;
+	const char* meshPath2;
 	const char* texturePath;
 	Weapon* weapon;
 	if (!pData || !weaponToAdd) return NULL;
@@ -1164,8 +1177,11 @@ void player_add_gun(PlayerData* pData, SJson* weaponToAdd) {
 	sj_object_get_value_as_int(weaponToAdd, "damage", &weapon->damage);
 	sj_object_get_value_as_int(weaponToAdd, "cooldown", &weapon->cooldown);
 	meshPath = sj_object_get_value_as_string(weaponToAdd, "mesh");
+	meshPath2 = sj_object_get_value_as_string(weaponToAdd, "mesh2");
 	texturePath = sj_object_get_value_as_string(weaponToAdd, "texture");
-	weapon->weaponMesh = gf3d_mesh_load(meshPath);
+	weapon->restWeaponMesh = gf3d_mesh_load(meshPath);
+	weapon->firedWeaponMesh = gf3d_mesh_load(meshPath2);
+	weapon->weaponMesh = weapon->restWeaponMesh;
 	weapon->weaponTexture = gf3d_texture_load(texturePath);
 	gfc_list_append(pData->gunInventory, weapon);
 	pData->gunIndexMax = (Uint8)gfc_list_count(pData->gunInventory);
@@ -1205,7 +1221,8 @@ void player_free_arms(PlayerData* pData) {
 	for (int i = 0; i < gfc_list_get_count(pData->armInventory); i++) {
 		part = gfc_list_get_nth(pData->armInventory, i);
 		part->name[0] = '\0';
-		gf3d_mesh_free(part->armMesh);
+		gf3d_mesh_free(part->restArmMesh);
+		gf3d_mesh_free(part->firedArmMesh);
 		gf3d_texture_free(part->armTexture);
 		memset(part, 0, sizeof(Arm));
 	}
@@ -1239,7 +1256,8 @@ void player_free_weapons(PlayerData* pData) {
 	for (int i = 0; i < gfc_list_get_count(pData->gunInventory); i++) {
 		part = gfc_list_get_nth(pData->gunInventory, i);
 		part->name[0] = '\0';
-		gf3d_mesh_free(part->weaponMesh);
+		gf3d_mesh_free(part->restWeaponMesh);
+		gf3d_mesh_free(part->firedWeaponMesh);
 		gf3d_texture_free(part->weaponTexture);
 		memset(part, 0, sizeof(Weapon));
 	}

@@ -17,6 +17,8 @@ typedef struct {
 	const char* name[128];
 	Uint16 health;
 	Mesh* armMesh;
+	Mesh* restArmMesh;
+	Mesh* firedArmMesh;
 	Texture* armTexture;
 }Arm;
 
@@ -43,6 +45,8 @@ typedef struct {
 	Uint16 damage;
 	Uint16 cooldown;
 	Mesh* weaponMesh;
+	Mesh* restWeaponMesh;
+	Mesh* firedWeaponMesh;
 	Texture* weaponTexture;
 }Weapon;
 
